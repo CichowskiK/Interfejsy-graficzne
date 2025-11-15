@@ -1,0 +1,184 @@
+/* Reset podstawowy */
+* {
+    box-sizing: border-box;
+}
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+/*   układ strony startowej */
+body.main-page {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas:
+        "header header"
+        "nav nav"
+        "aside main";
+    gap: 12px;
+    min-height: 100vh;
+    background-color: #f4f6f8;
+    padding: 12px;
+}
+
+.main-page img {
+    max-width: 40vw;
+    margin-right: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px; 
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+    body.main-page {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto 1fr;
+        grid-template-areas:
+            "header"
+            "nav"
+            "aside"
+            "main";
+    }
+}
+
+/* układ poszczególnych elementów*/
+
+header {
+    grid-area: header;
+    background-color: #1e90ff;
+    color: white;
+    padding: 18px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+nav {
+    grid-area: nav;
+    background-color: #e6f0ff;
+    padding: 12px;
+    border-radius: 8px;
+}
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 16px;
+}
+nav li a {
+    text-decoration: none;
+    display: block;
+    padding: 10px 15px;
+    margin: auto;
+    color: #004080;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.25s ease;
+}
+
+nav li a:hover {
+    background-color: hsl(216, 100%, 85%);
+}
+
+aside {
+    grid-area: aside;
+    background-color: #ffffff;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #e0e6ef;
+}
+aside ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+aside li {
+    padding: 6px 8px;
+    margin-bottom: 6px;
+    background: #f5f9ff;
+    border-radius: 4px;
+    position: relative;
+    cursor: pointer;
+}
+
+/* Ddropdown menu */
+.dropdown > .submenu {
+    display: none;                 /* ukryte domyślnie */
+    position: absolute;            /* pozycjonowane względem .dropdown */
+    top: 100%;                     /* tuż pod elementem nadrzędnym */
+    left: 0;
+    background: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 4px;
+    padding: 6px 0;
+    min-width: 150px;
+    z-index: 100;
+}
+
+/* wyświetlanie submenu po najechaniu */
+.dropdown:hover > .submenu {
+    display: block;
+}
+
+/* styl elementów submenu */
+.submenu li {
+    padding: 6px 10px;
+    background: #fff;
+}
+.submenu li:hover {
+    background: #eef4ff;
+}
+
+
+main {
+    grid-area: main;
+    background: #ffffff;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #e0e6ef;
+    display: grid;
+    grid-auto-rows: min-content;
+    gap: 12px;
+}
+main section {
+    padding: 12px;
+    border-radius: 6px;
+    background: #fafcfe;
+    border: 1px solid #eef4fb;
+}
+
+/* konto */
+
+body.Konto {
+    display: flex;
+    flex-direction: column;
+}
+
+#dane {
+    display: flex;
+    flex-direction: row;
+    gap: 10vw;
+}
+
+#opcje {
+    display: flex;
+}
+
+#opcje a {
+    display: block;
+    padding: 10px 15px;
+    margin: auto;
+    text-decoration: none;
+    color: #222;
+    border-radius: 8px;
+    transition: 0.25s ease;
+}
+
+#opcje a:hover {
+    background-color: #e6e6e6;
+}
+
+
