@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <title>Wybór miejsca</title>
+</head>
+
+<body class="main-page">
+
+    <header>
+        <h1>Wybierz miejsce</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="koncert.html">Powrót</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Wybierz sektor</h2>
+
+            <div style="
+        display:grid; 
+        grid-template-columns: repeat(3, 1fr); 
+        gap:15px; 
+        max-width:500px;
+        margin:auto;
+        text-align:center;">
+
+                <!-- sektor -->
+                <div onclick="pokazMiejsca('A')"
+                    style="border:2px solid #1e90ff; padding:20px; border-radius:8px; cursor:pointer;">
+                    <h3>Sektor A</h3>
+                    <p>Najbliżej sceny</p>
+                </div>
+
+                <div onclick="pokazMiejsca('B')"
+                    style="border:2px solid #1e90ff; padding:20px; border-radius:8px; cursor:pointer;">
+                    <h3>Sektor B</h3>
+                    <p>Miejsca centralne</p>
+                </div>
+
+                <div onclick="pokazMiejsca('C')"
+                    style="border:2px solid #1e90ff; padding:20px; border-radius:8px; cursor:pointer;">
+                    <h3>Sektor C</h3>
+                    <p>Najtańsze miejsca</p>
+                </div>
+
+            </div>
+
+            <hr style="margin:30px 0;">
+
+            <!-- miejsca A -->
+            <div id="miejsca-A" class="lista-miejsc" style="display:none;">
+                <h2>Miejsca – Sektor A</h2>
+                <div style="display:flex; gap:10px;">
+                    <button style="padding:10px;">A1</button>
+                    <button style="padding:10px;">A2</button>
+                    <button style="padding:10px; background:#ccc;">A3 (zajęte)</button>
+                </div>
+            </div>
+
+            <!-- miejsca B -->
+            <div id="miejsca-B" class="lista-miejsc" style="display:none;">
+                <h2>Miejsca – Sektor B</h2>
+                <div style="display:flex; gap:10px;">
+                    <button style="padding:10px;">B5</button>
+                    <button style="padding:10px;">B6</button>
+                    <button style="padding:10px;">B7</button>
+                </div>
+            </div>
+
+            <!-- miejsca C -->
+            <div id="miejsca-C" class="lista-miejsc" style="display:none;">
+                <h2>Miejsca – Sektor C</h2>
+                <div style="display:flex; gap:10px;">
+                    <button style="padding:10px;">C1</button>
+                    <button style="padding:10px;">C2</button>
+                    <button style="padding:10px; background:#ccc;">C3 (zajęte)</button>
+                </div>
+            </div>
+
+            <br><br>
+
+            <a href="platnosc.html"
+                style="padding:12px 18px; background:#1e90ff; color:white; border-radius:8px; text-decoration:none;">
+                Przejdź do płatności
+            </a>
+        </section>
+
+        <script>
+            function pokazMiejsca(sektor) {
+                // ukryj wszystkie
+                document.querySelectorAll('.lista-miejsc').forEach(div => {
+                    div.style.display = 'none';
+                });
+
+                // pokaż wybrany
+                document.getElementById('miejsca-' + sektor).style.display = 'block';
+
+                // scroll do miejsc
+                document.getElementById('miejsca-' + sektor).scrollIntoView({ behavior: 'smooth' });
+            }
+        </script>
+
+
+    </main>
+
+</body>
+
+</html>
