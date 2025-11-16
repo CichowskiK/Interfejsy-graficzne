@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Ustawienia powiadomień – TicketHero</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="Konto">
+    <header>
+        <h1>Ustawienia powiadomień</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="Konto.html">Konto</a></li>
+            <li><a href="index.html">Szukaj koncertów</a></li>
+            <li><a href="Szukaj_koncertow.html">Koncerty w twojej okolicy</a></li>
+            <li><a href="#">Wyloguj się</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="powiadomienia" class="card">
+            <p class="intro">
+                Tutaj możesz ustawić, o jakich koncertach mamy Cię informować
+                i w jaki sposób chcesz otrzymywać powiadomienia.
+            </p>
+
+            <form id="notifications-form">
+                <fieldset class="block">
+                    <legend>Artyści, o których chcesz otrzymywać powiadomienia</legend>
+                    <p class="hint">
+                        Zaznacz wykonawców, których koncertów nie chcesz przegapić.
+                    </p>
+                    <div class="field-row">
+                        <label>
+                            <input type="checkbox" name="artist" checked>
+                            Kwiat Jabłoni
+                        </label>
+                        <label>
+                            <input type="checkbox" name="artist" checked>
+                            Dawid Podsiadło
+                        </label>
+                        <label>
+                            <input type="checkbox" name="artist">
+                            Sanah
+                        </label>
+                        <label>
+                            <input type="checkbox" name="artist">
+                            Måneskin
+                        </label>
+                    </div>
+                </fieldset>
+
+                <fieldset class="block">
+                    <legend>Lokalizacja i odległość</legend>
+                    <div class="field-column">
+                        <label>
+                            Twoje miasto bazowe:
+                            <input type="text" name="city" placeholder="np. Warszawa">
+                        </label>
+                        <label>
+                            Promień wyszukiwania:
+                            <select name="radius">
+                                <option>25 km</option>
+                                <option selected>50 km</option>
+                                <option>100 km</option>
+                                <option>200 km</option>
+                            </select>
+                        </label>
+                    </div>
+                </fieldset>
+
+                <fieldset class="block">
+                    <legend>Jak chcesz otrzymywać powiadomienia?</legend>
+                    <p class="hint">
+                        Możesz wybrać kilka form. Poniżej widzisz podgląd przykładowych powiadomień.
+                    </p>
+
+                    <div class="notification-types">
+                        <div class="channel-option">
+                            <label class="channel-header">
+                                <input type="checkbox" name="channel" value="email" checked>
+                                E-mail
+                            </label>
+                            <div class="channel-preview">
+                                <strong>Tytuł:</strong> Nowy koncert Twojego ulubionego artysty<br>
+                                <span>„Kwiat Jabłoni – nowy koncert w Twojej okolicy. Bilety już w sprzedaży!”</span>
+                            </div>
+                        </div>
+
+                        <div class="channel-option">
+                            <label class="channel-header">
+                                <input type="checkbox" name="channel" value="push" checked>
+                                Powiadomienie push
+                            </label>
+                            <div class="channel-preview">
+                                <span> TicketHero:</span><br>
+                                <span>„Dawid Podsiadło zagra w Twoim mieście za 3 tygodnie”</span>
+                            </div>
+                        </div>
+
+                        <div class="channel-option">
+                            <label class="channel-header">
+                                <input type="checkbox" name="channel" value="sms">
+                                SMS
+                            </label>
+                            <div class="channel-preview">
+                                <span>[SMS] TicketHero:</span><br>
+                                <span>„Nowy koncert w Twojej okolicy. Sprawdź szczegóły w aplikacji.”</span>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset> 
+
+                <div class="actions">
+                    <a href="Konto.html" class="button secondary">Anuluj</a>
+                    <button type="submit" class="button primary">Zapisz ustawienia</button>
+                </div>
+
+                <p id="success-message"
+                   class="info-success hidden"
+                   role="status"
+                   aria-hidden="true">
+                    Twoje ustawienia powiadomień zostały <strong>pomyślnie zapisane</strong>.
+                </p>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        const form = document.getElementById('notifications-form');
+        const successMessage = document.getElementById('success-message');
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); 
+            successMessage.classList.remove('hidden');
+            successMessage.setAttribute('aria-hidden', 'false');
+            successMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    </script>
+</body>
+</html>
