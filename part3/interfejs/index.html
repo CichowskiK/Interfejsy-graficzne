@@ -50,19 +50,23 @@
             <li class="dropdown">
                 Cena
                 <ul class="submenu">
-                    <li>Od:<input></li>
-                    <li>Do:<input></li>
+                    <li>Od:<input id="priceMin" , type="number"></li>
+                    <li>Do:<input id="priceMax" , type="number"></li>
                 </ul>
             </li>
             <p></p>
-            <a href="#"
+            <a href="#" id="searchButton"
                 style="padding:10px 15px; background:#1e90ff; color:white; border-radius:8px; text-decoration:none;">
                 Szukaj
             </a>
+            <a href="#" id="clearFilters"
+                style="padding:10px 15px; background:#ff4d4d; color:white; border-radius:8px; text-decoration:none; margin-left:10px;">
+                Wyczyść filtry
+            </a>
         </ul>
     </aside>
-    <main>
-        <section>
+    <main id="concertList">
+        <section data-artist="Freddie Mercury" data-city="Łódź" data-genre="Rock" data-price="150">
             <h1>Freddie Mercury Rock-Operowo przy świecach</h1>
             <img src="https://www.ebilet.pl/media/cms/media/xrhpj4s5/freddie-mercury-opera-show-552x736-px-e2f617db-f1c6-4e8d-a457-635fc1b031af.webp"
                 alt="Plakat koncertu: Freddie Mercury Rock-Operowo przy świecach">
@@ -77,7 +81,7 @@
                 Zobacz szczegóły
             </a>
         </section>
-        <section>
+        <section data-artist="Michał Wiśniewski" data-city="Kraków" data-genre="Techno" data-price="700">
             <h1>Michał Wiśniewski Akustycznie</h1>
             <img src="https://www.ebilet.pl/media/cms/media/msundxlx/552x736-572dbcc9-1658-6521-e1a4-683e025dca76-86ed122f-6ff1-4558-bf24-dde28dfe1922.webp"
                 alt="Plakat koncertu: Michał Wiśniewski Akustycznie">
@@ -94,7 +98,7 @@
                 Zobacz szczegóły
             </a>
         </section>
-        <section>
+        <section data-artist="Piotr Rubik" data-city="Poznań" data-genre="Pop" data-price="300">
             <h1>Piotr Rubik „Świat się nie kończy..."</h1>
             <div>
                 <img src="https://www.ebilet.pl/media/cms/media/2gqbfdqf/rubik_swiat_656x369-1-6b92428f-6a83-446c-949f-4b3c0f134fd5.webp"
@@ -109,26 +113,90 @@
             </a>
         </section>
 
-        <section>
-                <h1>Maryla Rodowicz – Największe Przeboje na Żywo</h1>
-                <img src="https://biletyna.pl/file/get/id/173202"
-                alt="Plakat koncertu: Freddie Mercury Rock-Operowo przy świecach"
-                width="300">
+        <section data-artist="Maryla Rodowicz" data-city="Warszawa" data-genre="Pop" data-price="400">
+            <h1>Maryla Rodowicz – Największe Przeboje na Żywo</h1>
+            <img src="https://biletyna.pl/file/get/id/173202"
+                alt="Plakat koncertu: Freddie Mercury Rock-Operowo przy świecach" width="300">
 
-                <p>
-                    Niezapomniana legenda polskiej sceny wraca z wyjątkowym koncertem w Warszawie, podczas którego usłyszysz największe
-                    przeboje Maryli Rodowicz w nowych, energetycznych aranżacjach. To niepowtarzalna okazja, aby przeżyć
-                    wieczór pełen emocji, wspólnego śpiewania i wyjątkowej atmosfery, którą potrafi stworzyć tylko Maryla.
-                    Bilety na koncert są już dostępne już od 300zł!
-                </p>
+            <p>
+                Niezapomniana legenda polskiej sceny wraca z wyjątkowym koncertem w Warszawie, podczas którego usłyszysz
+                największe
+                przeboje Maryli Rodowicz w nowych, energetycznych aranżacjach. To niepowtarzalna okazja, aby przeżyć
+                wieczór pełen emocji, wspólnego śpiewania i wyjątkowej atmosfery, którą potrafi stworzyć tylko Maryla.
+                Bilety na koncert są już dostępne już od 300zł!
+            </p>
 
-                <a href="koncert-maryla.html"
-                    style="padding:10px 15px; background:#1e90ff; color:white; border-radius:8px; text-decoration:none;">
-                    Zobacz szczegóły
-                </a>
-            </section>
-        
+            <a href="koncert-maryla.html"
+                style="padding:10px 15px; background:#1e90ff; color:white; border-radius:8px; text-decoration:none;">
+                Zobacz szczegóły
+            </a>
+        </section>
+
     </main>
+    <script>
+        const searchBtn = document.getElementById("searchButton");
+        const clearBtn = document.getElementById("clearFilters");
+
+        const artistInput = document.getElementById("artistInput");
+        const cityInput = document.getElementById("cityInput");
+        const priceMin = document.getElementById("priceMin");
+        const priceMax = document.getElementById("priceMax");
+
+        const checkboxes = document.querySelectorAll(".dropdown input[type='checkbox']");
+        const concerts = document.querySelectorAll("main section");
+
+        function applyFilters() {
+            const artistVal = artistInput.value.toLowerCase();
+            const cityVal = cityInput.value.toLowerCase();
+            const minVal = priceMin.value ? parseFloat(priceMin.value) : 0;
+            const maxVal = priceMax.value ? parseFloat(priceMax.value) : Infinity;
+
+            const selectedGenres = [...checkboxes]
+                .filter(cb => cb.checked)
+                .map(cb => cb.value.toLowerCase());
+
+            concerts.forEach(section => {
+                const artist = section.dataset.artist.toLowerCase();
+                const city = section.dataset.city.toLowerCase();
+                const price = parseFloat(section.dataset.price);
+                const genres = section.dataset.genre.toLowerCase();
+
+                let show = true;
+
+                if (artistVal && !artist.includes(artistVal)) show = false;
+
+                if (cityVal && !city.includes(cityVal)) show = false;
+
+                if (selectedGenres.length > 0) {
+                    let match = selectedGenres.some(g => genres.includes(g));
+                    if (!match) show = false;
+                }
+
+                if (price < minVal || price > maxVal) show = false;
+
+                section.style.display = show ? "" : "none";
+            });
+        }
+
+        searchBtn.addEventListener("click", e => {
+            e.preventDefault();
+            applyFilters();
+        });
+
+        clearBtn.addEventListener("click", e => {
+            e.preventDefault();
+
+            artistInput.value = "";
+            cityInput.value = "";
+            priceMin.value = "";
+            priceMax.value = "";
+            checkboxes.forEach(cb => cb.checked = false);
+
+            concerts.forEach(section => {
+                section.style.display = "";
+            });
+        });
+    </script>
 
 </body>
 
