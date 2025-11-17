@@ -109,19 +109,23 @@ aside li {
     cursor: pointer;
 }
 
-/* Ddropdown menu */
+.dropdown {
+    position: relative;
+    /* ważne! */
+}
+
+
 .dropdown>.submenu {
     display: none;
-    /* ukryte domyślnie */
     position: absolute;
-    /* pozycjonowane względem .dropdown */
     top: 100%;
-    /* tuż pod elementem nadrzędnym */
+    /* dotyka dolnej krawędzi elementu głównego */
     left: 0;
     background: #ffffff;
     border: 1px solid #ccc;
     border-radius: 4px;
-    margin-top: 4px;
+    margin-top: 0;
+    /* usuń odstęp powodujący przerwę */
     padding: 6px 0;
     min-width: 150px;
     z-index: 100;
