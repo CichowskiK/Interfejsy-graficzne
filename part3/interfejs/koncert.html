@@ -1,3 +1,44 @@
+<script>
+    // Dane koncertów
+    const concertsData = {
+        1: {
+            title: "Freddie Mercury Rock-Operowo",
+            img: "https://www.ebilet.pl/media/cms/media/xrhpj4s5/freddie-mercury-opera-show-552x736-px-e2f617db-f1c6-4e8d-a457-635fc1b031af.webp",
+            description: "Nowe, niezwykłe spojrzenie na utwory Queen."
+        },
+        2: {
+            title: "Michał Wiśniewski Akustycznie",
+            img: "https://www.ebilet.pl/media/cms/media/msundxlx/552x736-572dbcc9-1658-6521-e1a4-683e025dca76-86ed122f-6ff1-4558-bf24-dde28dfe1922.webp",
+            description: "Akustyczne aranżacje największych przebojów Michała Wiśniewskiego."
+        },
+        3: {
+            title: "Piotr Rubik „Świat się nie kończy...”",
+            img: "https://www.ebilet.pl/media/cms/media/2gqbfdqf/rubik_swiat_656x369-1-6b92428f-6a83-446c-949f-4b3c0f134fd5.webp",
+            description: "Pełne energii i emocji kompozycje Piotra Rubika."
+        },
+        4: {
+            title: "Maryla Rodowicz – Największe Przeboje na Żywo",
+            img: "https://biletyna.pl/file/get/id/173202",
+            description: "Największe przeboje Maryli Rodowicz w nowych aranżacjach."
+        }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    const data = concertsData[id];
+
+    window.onload = () => {
+        if (!data) return;
+
+        document.getElementById("title").textContent = data.title;
+        document.getElementById("img").src = data.img;
+        document.getElementById("description").textContent = data.description;
+
+        const buyButton = document.getElementById("kupBilet");
+        buyButton.href = `wybor_miejsca.html?id=${id}`;
+    };
+</script>
+
 <!DOCTYPE html>
 <html lang="pl">
 
@@ -10,7 +51,7 @@
 <body class="main-page">
 
     <header>
-        <h1>Freddie Mercury Rock-Operowo</h1>
+        <h1 id="title"></h1>
     </header>
 
     <nav>
@@ -21,15 +62,14 @@
 
     <main>
         <section>
-            <img
-                src="https://www.ebilet.pl/media/cms/media/xrhpj4s5/freddie-mercury-opera-show-552x736-px-e2f617db-f1c6-4e8d-a457-635fc1b031af.webp">
-            <p>Nowe, niezwykłe spojrzenie na utwory Queen. Kliknij w przycisk poniżej aby kupić bilet.</p>
-            <a href="wybor_miejsca.html"
-                style="padding:12px 18px; background:#1e90ff; color:white; border-radius:8px; text-decoration:none;">Kup
-                bilet</a>
+            <img id="img">
+            <p id="description"></p>
+            <a id="kupBilet"
+                style="padding:12px 18px; background:#1e90ff; color:white; border-radius:8px; text-decoration:none;">
+                Kup bilet
+            </a>
         </section>
     </main>
-
 </body>
 
 </html>

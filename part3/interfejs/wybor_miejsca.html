@@ -15,7 +15,7 @@
 
     <nav>
         <ul>
-            <li><a href="koncert.html">Powrót</a></li>
+            <li><a id="powrotLink">Powrót</a></li>
         </ul>
     </nav>
 
@@ -109,6 +109,18 @@
 
 
     </main>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        const back = document.getElementById("powrotLink");
+        if (id) {
+            back.href = "koncert.html?id=" + id;
+        } else {
+            back.href = "koncert.html"; // fallback
+        }
+    </script>
 
 </body>
 

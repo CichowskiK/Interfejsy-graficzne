@@ -41,17 +41,16 @@
             <li class="dropdown">
                 Gatunek
                 <ul class="submenu">
-                    <li><input></li>
-                    <li> <input type="checkbox"> Pop</li>
-                    <li> <input type="checkbox"> Rock</li>
-                    <li> <input type="checkbox"> Techno</li>
+                    <li> <input type="checkbox" value="Pop"> Pop</li>
+                    <li> <input type="checkbox" value="Rock"> Rock</li>
+                    <li> <input type="checkbox" value="Techno"> Techno</li>
                 </ul>
             </li>
             <li class="dropdown">
                 Cena
                 <ul class="submenu">
-                    <li>Od:<input id="priceMin" , type="number"></li>
-                    <li>Do:<input id="priceMax" , type="number"></li>
+                    <li>Od:<input id="priceMin" type="number"></li>
+                    <li>Do:<input id="priceMax" type="number"></li>
                 </ul>
             </li>
             <p></p>
@@ -126,7 +125,7 @@
                 Bilety na koncert są już dostępne już od 300zł!
             </p>
 
-            <a href="koncert-maryla.html"
+            <a href="koncert.html"
                 style="padding:10px 15px; background:#1e90ff; color:white; border-radius:8px; text-decoration:none;">
                 Zobacz szczegóły
             </a>
@@ -195,6 +194,21 @@
             concerts.forEach(section => {
                 section.style.display = "";
             });
+        });
+    </script>
+
+    <script>
+        const concertSections = document.querySelectorAll("main section");
+
+        concertSections.forEach((section, index) => {
+            const concertId = index + 1;
+
+            section.dataset.id = concertId;
+
+            const detailsLink = section.querySelector("a[href*='koncert']");
+            if (detailsLink) {
+                detailsLink.href = `koncert.html?id=${concertId}`;
+            }
         });
     </script>
 
