@@ -60,15 +60,52 @@
                             Twoje miasto bazowe:
                             <input type="text" name="city" placeholder="np. Warszawa">
                         </label>
-                        <label>
-                            Promień wyszukiwania:
-                            <select name="radius">
-                                <option>25 km</option>
-                                <option selected>50 km</option>
-                                <option>100 km</option>
-                                <option>200 km</option>
-                            </select>
-                        </label>
+                        <div class="slider-container">
+                    
+                    <label>
+                        Odległość: <span id="value">50</span> km
+                    </label>
+
+                    <div class="slider-box">
+                        <input
+                            type="range"
+                            id="distance"
+                            min="0"
+                            max="200"
+                            value="50"
+                            >
+
+                        <div class="labels">
+                        <span style="left:12.5%" data-value="25">25</span>
+                        <span style="left:25%" data-value="50">50</span>
+                        <span style="left:50%" data-value="100">100</span>
+                        <span style="left:75%" data-value="150">150</span>
+                        <span style="left:100%" data-value="200">200</span>
+                        </div>
+                    </div>
+                    
+
+
+                        <script>
+                            const slider = document.getElementById("distance");
+                            const output = document.getElementById("value");
+                            const labels = document.querySelectorAll(".labels span");
+
+                            output.textContent = slider.value;
+
+                            slider.addEventListener("input", () => {
+                                output.textContent = slider.value;
+                            });
+
+                            labels.forEach(label => {
+                                label.addEventListener("click", () => {
+                                const val = label.dataset.value;
+                                slider.value = val;
+                                output.textContent = val;
+                                slider.dispatchEvent(new Event("input"));
+                                });
+                            });
+                        </script>
                     </div>
                 </fieldset>
 

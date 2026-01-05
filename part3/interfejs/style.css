@@ -324,3 +324,32 @@ body.Konto {
 .hidden {
     display: none;
 }
+
+.slider-box {
+  position: relative;
+
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.labels {
+  position: relative;
+  height: 20px;
+  margin-top: 6px;
+}
+
+.labels span {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 12px;
+  cursor: pointer;
+  user-select: none;
+  color: #444;
+}
+
+.labels span:hover {
+  font-weight: bold;
+  color: black;
+}
