@@ -14,21 +14,54 @@
     </header>
 
     <main>
-        <section>
+        
+        <ul class="stepper" aria-label="Kroki zakupu">
+            <li>1. Wybór miejsca</li>
+            <li>2. Płatność</li>
+            <li class="active">3. Potwierdzenie</li>
+        </ul>
+
+        <div class="summary-box" aria-live="polite">
+            <strong>Szczegóły zakupu:</strong>
+            <div>Koncert ID: <span id="confirmId">—</span></div>
+            <div>Sektor: <span id="confirmSector">—</span></div>
+            <div>Miejsce: <span id="confirmSeat">—</span></div>
+        </div>
+<section>
             <p>Dziękujemy za zakup biletu.</p>
             <p>Numer biletu: #FMR-001234</p>
 
-            <button style="padding:12px 18px; background:#1e90ff; color:white; border-radius:8px; margin-right:10px;">
-                Pobierz bilet
-            </button>
+            <button id="downloadTicket" class="btn btn-secondary" type="button">Pobierz bilet</button>
 
-            <a href="index.html"
-                style="padding:12px 18px; background:#28a745; color:white; border-radius:8px; text-decoration:none;">
-                Wróć do strony głównej
-            </a>
+            <a class="btn btn-success" href="index.html">Wróć do strony głównej</a>
+            <div style="margin-top:12px;">
+                <a id="backToConcert" class="btn btn-primary" href="index.html">Wróć do szczegółów koncertu</a>
+            </div>
         </section>
     </main>
 
+    <script>
+        const qs = new URLSearchParams(window.location.search);
+        const id = qs.get("id");
+        const sektor = qs.get("sektor");
+        const miejsce = qs.get("miejsce");
+
+        document.getElementById("confirmId").textContent = id || "—";
+        document.getElementById("confirmSector").textContent = sektor || "—";
+        document.getElementById("confirmSeat").textContent = miejsce || "—";
+
+        const backToConcert = document.getElementById("backToConcert");
+        if (backToConcert && id) {
+            backToConcert.href = "koncert.html?id=" + id;
+        }
+
+        const downloadBtn = document.getElementById("downloadTicket");
+        if (downloadBtn) {
+            downloadBtn.addEventListener("click", () => {
+                alert("Pobieranie biletu jest jeszcze w trakcie tworzenia (WIP).");
+            });
+        }
+    </script>
 </body>
 
 </html>

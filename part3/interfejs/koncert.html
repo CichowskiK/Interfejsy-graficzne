@@ -1,5 +1,4 @@
 <script>
-    // Dane koncertów
     const concertsData = {
         1: {
             title: "Freddie Mercury Rock-Operowo",
@@ -56,18 +55,27 @@
     const data = concertsData[id];
 
     window.onload = () => {
-        if (!data) return;
+        const missingBox = document.getElementById("missingConcert");
+        const buyButton = document.getElementById("kupBilet");
+
+        if (!data) {
+            document.getElementById("title").textContent = "Nie wybrano koncertu";
+            if (missingBox) missingBox.style.display = "block";
+            if (buyButton) buyButton.style.display = "none";
+            return;
+        }
 
         document.getElementById("title").textContent = data.title;
         document.getElementById("img").src = data.img;
+        document.getElementById("img").alt = "Plakat koncertu: " + data.title;
         document.getElementById("description").textContent = data.description;
         document.getElementById("artist").innerHTML = "<strong>Artysta:</strong> " + data.artist;
         document.getElementById("location").innerHTML = "<strong>Miasto:</strong> " + data.location;
         document.getElementById("place").innerHTML = "<strong>Miejsce:</strong> " + data.place;
         document.getElementById("date").innerHTML = "<strong>Data:</strong> " + data.date;
         document.getElementById("time").innerHTML = "<strong>Godzina:</strong> " + data.time;
-        const buyButton = document.getElementById("kupBilet");
-        buyButton.href = `wybor_miejsca.html?id=${id}`;
+
+        if (buyButton) buyButton.href = `wybor_miejsca.html?id=${id}`;
     };
 </script>
 
@@ -77,7 +85,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
-    <title>Koncert – Szczegóły</title>
+    <title>Koncert – szczegóły</title>
 </head>
 
 <body class="main-page">
@@ -93,7 +101,12 @@
     </nav>
 
     <main>
-        <section>
+        
+        <div id="missingConcert" class="info info-warning" style="display:none;">
+            <strong>Nie wybrano koncertu.</strong> Wróć do listy i wybierz koncert ponownie.
+            <div style="margin-top:10px;"><a class="btn btn-secondary" href="index.html">Wróć do listy koncertów</a></div>
+        </div>
+<section>
             <img id="img">
             <p id="description"></p>
             <p id="artist"></p>
@@ -101,8 +114,7 @@
             <p id="place"></p>
             <p id="date"></p>
             <p id="time"></p>
-            <a id="kupBilet"
-                style="padding:12px 18px; background:#1e90ff; color:white; border-radius:8px; text-decoration:none;">
+            <a id="kupBilet" class="btn btn-primary">
                 Kup bilet
             </a>
         </section>

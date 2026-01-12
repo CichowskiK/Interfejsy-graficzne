@@ -1,12 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
-    <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <title>Koncerty w twojej okolicy – TicketHero (WIP)</title>
 </head>
-<body>
-    
+<body class="main-page">
+    <header>
+        <h1>Koncerty w twojej okolicy</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="Konto.html">Konto</a></li>
+            <li><a href="index.html">Szukaj koncertów</a></li>
+            <li><a class="disabled-link" href="#" aria-disabled="true">Koncerty w twojej okolicy <span class="tag tag-wip">WIP</span></a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="info info-warning">
+            <strong>Working in progress.</strong> Ta funkcja jest jeszcze w trakcie tworzenia.
+            <p style="margin-top:10px;">Wróć do listy koncertów i wybierz wydarzenie ręcznie.</p>
+            <a class="btn btn-primary" href="index.html">Wróć do listy koncertów</a>
+        </div>
+    </main>
 </body>
 </html>
