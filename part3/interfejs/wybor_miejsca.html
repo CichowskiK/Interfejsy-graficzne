@@ -57,16 +57,19 @@
                 <div id="sektor-A" class="sektor" onclick="pokazMiejsca('A')">
                     <h3>Sektor A</h3>
                     <p>Najbliżej sceny</p>
+                    <p>Cena:<br> powyżej 200 PLN</p>
                 </div>
 
                 <div id="sektor-B" class="sektor" onclick="pokazMiejsca('B')">
                     <h3>Sektor B</h3>
                     <p>Miejsca centralne</p>
+                    <p>Cena:<br> Pomiędzy 130 PLN, a 200 PLN</p>
                 </div>
 
                 <div id="sektor-C" class="sektor" onclick="pokazMiejsca('C')">
                     <h3>Sektor C</h3>
                     <p>Najtańsze miejsca</p>
+                    <p>Cena:<br> do 130 PLN</p>
                 </div>
 
             </div>
@@ -77,8 +80,8 @@
             <div id="miejsca-A" class="lista-miejsc" style="display:none;">
                 <h2>Miejsca – Sektor A</h2>
                 <div style="display:flex; gap:10px;">
-                    <button>A1</button>
-                    <button>A2</button>
+                    <button disabled>A1 (zajęte)</button>
+                    <button disabled>A2 (zajęte)</button>
                     <button disabled>A3 (zajęte)</button>
                 </div>
             </div>
@@ -88,7 +91,7 @@
                 <h2>Miejsca – Sektor B</h2>
                 <div style="display:flex; gap:10px;">
                     <button>B5</button>
-                    <button>B6</button>
+                    <button disabled>B6 (zajęte)</button>
                     <button>B7</button>
                 </div>
             </div>
