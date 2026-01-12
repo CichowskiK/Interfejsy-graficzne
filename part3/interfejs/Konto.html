@@ -1,24 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Konto – TicketHero</title>
 </head>
 <body class="Konto">
     <header>
-        <h1>Jesteś zalogowany jako: Kasia</h2>
+        <h1>Jesteś zalogowany jako: Kasia</h1>
     </header>
     <nav>
         <ul>
             <li><a href="Konto.html">Konto</a></li>
             <li><a href="index.html">Szukaj koncertów</a></li>
-            <li><a>Koncerty w twojej okolicy</a></li>
-            <li><a>Wyloguj się</a></li>
+            <li><a class="disabled-link" href="#" aria-disabled="true">Koncerty w twojej okolicy <span class="tag tag-wip">WIP</span></a></li>
+            <li><a class="disabled-link" href="#" aria-disabled="true">Wyloguj się <span class="tag tag-wip">WIP</span></a></li>
         </ul>
     </nav>
     <main>
+        <div class="info"><strong>Wskazówka:</strong> Funkcje oznaczone „WIP” są w trakcie tworzenia.</div>
         <section id="dane">
             <p style="white-space: pre-wrap;">
                 Imie: Kasia
@@ -31,9 +32,9 @@
         </section>
 
         <section id="opcje">
-            <a> Historia Koncertów </a>
-            <a> Ulubieni Artyści </a>
-            <a> Kalendarz </a>
+            <a class="disabled-link" href="#" aria-disabled="true">Historia Koncertów <span class="tag tag-wip">WIP</span></a>
+            <a class="disabled-link" href="#" aria-disabled="true">Ulubieni Artyści <span class="tag tag-wip">WIP</span></a>
+            <a class="disabled-link" href="#" aria-disabled="true">Kalendarz <span class="tag tag-wip">WIP</span></a>
             <a href="powiadomienia.html"> Ustawienia powiadomień </a>
         </section>
     </main>

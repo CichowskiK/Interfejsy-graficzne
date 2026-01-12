@@ -37,18 +37,35 @@
 <body class="main-page">
 
     <header>
-        <h1>Wypełnij Folmularz</h1>
+        <h1>Wypełnij formularz</h1>
     </header>
 
     <nav>
         <ul>
-            <li><a href="wybor_miejsca.html">Powrót</a></li>
+            <li><a id="backToSeats" class="btn btn-secondary" href="#">Powrót do wyboru miejsc</a></li>
         </ul>
     </nav>
 
     <main>
-        <section>
-                    <form action="potwierdzenie.html">
+        
+        <ul class="stepper" aria-label="Kroki zakupu">
+            <li>1. Wybór miejsca</li>
+            <li class="active">2. Płatność</li>
+            <li>3. Potwierdzenie</li>
+        </ul>
+
+        <div id="missingPaymentContext" class="info info-warning" style="display:none;">
+            <strong>Brakuje informacji o koncercie / miejscu.</strong> Wróć do wyboru miejsc i spróbuj ponownie.
+        </div>
+
+        <div class="summary-box" aria-live="polite">
+            <strong>Podsumowanie:</strong>
+            <div>Koncert ID: <span id="paySummaryId">—</span></div>
+            <div>Sektor: <span id="paySummarySector">—</span></div>
+            <div>Miejsce: <span id="paySummarySeat">—</span></div>
+        </div>
+<section>
+                    <form id="paymentForm" action="potwierdzenie.html">
                     <div class="form_row">
                         <h3>Dane klienta</h3>
                     </div>
@@ -76,7 +93,7 @@
                     
                     <div class="form_row">
                         <label class="payment-option">
-                            <input type="radio" name="payment" value="Przelew">
+                            <input type="radio" name="payment" value="Przelew" checked>
                             Przelew Tradycjny
                         </label>
 
@@ -119,7 +136,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="button_buy" type="submit" onclick="potwierdzenie.html">
+                    <button class="button_buy" type="submit">
                         Kupuję bilet
                     </button>
                 <p>*Pola oznaczone gwiazdką są obowiązkowe</p>
@@ -131,25 +148,64 @@
 </body>
 
 <script>
+    const qs = new URLSearchParams(window.location.search);
+    const id = qs.get("id");
+    const sektor = qs.get("sektor");
+    const miejsce = qs.get("miejsce");
+
+    const backToSeats = document.getElementById("backToSeats");
+    const form = document.getElementById("paymentForm");
+
+    const paySummaryId = document.getElementById("paySummaryId");
+    const paySummarySector = document.getElementById("paySummarySector");
+    const paySummarySeat = document.getElementById("paySummarySeat");
+    const missingCtx = document.getElementById("missingPaymentContext");
+
+    if (paySummaryId) paySummaryId.textContent = id || "—";
+    if (paySummarySector) paySummarySector.textContent = sektor || "—";
+    if (paySummarySeat) paySummarySeat.textContent = miejsce || "—";
+
+    if (backToSeats) {
+        const backQs = new URLSearchParams();
+        if (id) backQs.set("id", id);
+        if (sektor) backQs.set("sektor", sektor);
+        if (miejsce) backQs.set("miejsce", miejsce);
+        backToSeats.href = "wybor_miejsca.html" + (backQs.toString() ? ("?" + backQs.toString()) : "");
+    }
+
+    if (form) {
+        const nextQs = new URLSearchParams();
+        if (id) nextQs.set("id", id);
+        if (sektor) nextQs.set("sektor", sektor);
+        if (miejsce) nextQs.set("miejsce", miejsce);
+        form.action = "potwierdzenie.html" + (nextQs.toString() ? ("?" + nextQs.toString()) : "");
+    }
+
+    if ((!id || !sektor || !miejsce) && missingCtx) {
+        missingCtx.style.display = "block";
+    }
+
     const paymentRadios = document.querySelectorAll('input[name="payment"]');
     const transferData = document.getElementById('transferData');
     const blikData = document.getElementById('blikData');
+    const blikInput = document.getElementById('blikCode');
 
-    paymentRadios.forEach(radio => {
-        radio.addEventListener('change', () => {
-            if (radio.value === 'Przelew') {
-                transferData.classList.remove('hidden');
-                blikData.classList.add('hidden');
-                blikInput.required = false;
-            }
+    function applyPaymentView() {
+        const chosen = document.querySelector('input[name="payment"]:checked')?.value;
 
-            if (radio.value === 'blik') {
-                blikData.classList.remove('hidden');
-                transferData.classList.add('hidden');
-                blikInput.required = true;
-            }
-        });
-    });
+        if (chosen === 'Przelew') {
+            transferData?.classList.remove('hidden');
+            blikData?.classList.add('hidden');
+            if (blikInput) blikInput.required = false;
+        } else if (chosen === 'blik') {
+            blikData?.classList.remove('hidden');
+            transferData?.classList.add('hidden');
+            if (blikInput) blikInput.required = true;
+        }
+    }
+
+    paymentRadios.forEach(r => r.addEventListener('change', applyPaymentView));
+    applyPaymentView();
 </script>
 
 </html>

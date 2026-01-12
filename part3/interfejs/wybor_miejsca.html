@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="style.css">
     <title>Wybór miejsca</title>
     <style>
-        /* podświetlenie wybranego sektora/miejsca */
         .sektor.active, .lista-miejsc button.active {
             background-color: #1e90ff;
             color: white;
@@ -42,7 +41,27 @@
     </nav>
 
     <main>
-        <section>
+        
+        <ul class="stepper" aria-label="Kroki zakupu">
+            <li class="active">1. Wybór miejsca</li>
+            <li>2. Płatność</li>
+            <li>3. Potwierdzenie</li>
+        </ul>
+
+        <div id="missingIdBox" class="info info-warning" style="display:none;">
+            <strong>Brakuje informacji o koncercie.</strong> Wróć do listy i wybierz koncert ponownie.
+            <div style="margin-top:10px;">
+                <a class="btn btn-secondary" href="index.html">Wróć do listy koncertów</a>
+            </div>
+        </div>
+
+        <div class="summary-box" aria-live="polite">
+            <strong>Twój wybór:</strong>
+            <div>Koncert ID: <span id="summaryId">—</span></div>
+            <div>Sektor: <span id="summarySector">—</span></div>
+            <div>Miejsce: <span id="summarySeat">—</span></div>
+        </div>
+<section>
             <h2>Wybierz sektor</h2>
 
             <div style="
@@ -53,7 +72,6 @@
         margin:auto;
         text-align:center;">
 
-                <!-- sektor -->
                 <div id="sektor-A" class="sektor" onclick="pokazMiejsca('A')">
                     <h3>Sektor A</h3>
                     <p>Najbliżej sceny</p>
@@ -76,7 +94,6 @@
 
             <hr style="margin:30px 0;">
 
-            <!-- miejsca A -->
             <div id="miejsca-A" class="lista-miejsc" style="display:none;">
                 <h2>Miejsca – Sektor A</h2>
                 <div style="display:flex; gap:10px;">
@@ -86,7 +103,6 @@
                 </div>
             </div>
 
-            <!-- miejsca B -->
             <div id="miejsca-B" class="lista-miejsc" style="display:none;">
                 <h2>Miejsca – Sektor B</h2>
                 <div style="display:flex; gap:10px;">
@@ -96,7 +112,6 @@
                 </div>
             </div>
 
-            <!-- miejsca C -->
             <div id="miejsca-C" class="lista-miejsc" style="display:none;">
                 <h2>Miejsca – Sektor C</h2>
                 <div style="display:flex; gap:10px;">
@@ -108,59 +123,120 @@
 
             <br><br>
 
-            <a href="platnosc.html"
-                style="padding:12px 18px; background:#1e90ff; color:white; border-radius:8px; text-decoration:none;">
-                Przejdź do płatności
-            </a>
+            <a id="toPayment" class="btn btn-primary" href="#" aria-disabled="true">Przejdź do płatności</a>
+            <p style="margin-top:10px; opacity:0.8;">Najpierw wybierz sektor i miejsce.</p>
         </section>
 
         <script>
-            // wybór sektora i wyświetlenie miejsc
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get("id");
+
+            let selectedSector = params.get("sektor");
+            let selectedSeat = params.get("miejsce");
+
+            const back = document.getElementById("powrotLink");
+            const toPayment = document.getElementById("toPayment");
+
+            const summaryId = document.getElementById("summaryId");
+            const summarySector = document.getElementById("summarySector");
+            const summarySeat = document.getElementById("summarySeat");
+            const missingIdBox = document.getElementById("missingIdBox");
+
+            function updateSummary() {
+                summaryId.textContent = id || "—";
+                summarySector.textContent = selectedSector || "—";
+                summarySeat.textContent = selectedSeat || "—";
+            }
+
+            function setPaymentDisabled(disabled) {
+                if (!toPayment) return;
+                if (disabled) {
+                    toPayment.href = "#";
+                    toPayment.setAttribute("aria-disabled", "true");
+                    toPayment.classList.add("disabled");
+                } else {
+                    toPayment.setAttribute("aria-disabled", "false");
+                    toPayment.classList.remove("disabled");
+                }
+            }
+
+            function updatePaymentLink() {
+                if (!id || !selectedSector || !selectedSeat) {
+                    setPaymentDisabled(true);
+                    return;
+                }
+                const qs = new URLSearchParams({ id, sektor: selectedSector, miejsce: selectedSeat });
+                toPayment.href = "platnosc.html?" + qs.toString();
+                setPaymentDisabled(false);
+            }
+
             function pokazMiejsca(sektor) {
-                // ukryj wszystkie listy miejsc
+                selectedSector = sektor;
+                selectedSeat = null;
+
                 document.querySelectorAll('.lista-miejsc').forEach(div => {
                     div.style.display = 'none';
                 });
 
-                // usuń podświetlenie z wszystkich sektorów
                 document.querySelectorAll('.sektor').forEach(div => {
                     div.classList.remove('active');
                 });
 
-                // podświetl wybrany sektor
+                document.querySelectorAll('.lista-miejsc button').forEach(b => b.classList.remove('active'));
+
                 const sektorDiv = document.getElementById('sektor-' + sektor);
                 if (sektorDiv) sektorDiv.classList.add('active');
 
-                // pokaż miejsca dla sektora
-                document.getElementById('miejsca-' + sektor).style.display = 'block';
+                const miejsca = document.getElementById('miejsca-' + sektor);
+                if (miejsca) {
+                    miejsca.style.display = 'block';
+                    miejsca.scrollIntoView({ behavior: 'smooth' });
+                }
 
-                // scroll do miejsc
-                document.getElementById('miejsca-' + sektor).scrollIntoView({ behavior: 'smooth' });
+                updateSummary();
+                updatePaymentLink();
             }
 
-            // podświetlanie wybranego miejsca
             document.querySelectorAll('.lista-miejsc button').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    // ignoruj przyciski zajęte
                     if (btn.disabled) return;
 
-                    // usuń active ze wszystkich przycisków w tym sektorze
                     btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
 
-                    // dodaj active do klikniętego
                     btn.classList.add('active');
+                    selectedSeat = btn.textContent.trim();
+
+                    updateSummary();
+                    updatePaymentLink();
                 });
             });
 
-            // link powrotu
-            const params = new URLSearchParams(window.location.search);
-            const id = params.get("id");
+            if (back) {
+                back.href = id ? ("koncert.html?id=" + id) : "index.html";
+            }
 
-            const back = document.getElementById("powrotLink");
-            if (id) {
-                back.href = "koncert.html?id=" + id;
+            if (!id && missingIdBox) {
+                missingIdBox.style.display = "block";
+            }
+
+            updateSummary();
+
+            if (selectedSector) {
+                pokazMiejsca(selectedSector);
+
+                if (selectedSeat) {
+                    const list = document.getElementById("miejsca-" + selectedSector);
+                    if (list) {
+                        const seatBtn = Array.from(list.querySelectorAll("button"))
+                            .find(b => b.textContent.trim() === selectedSeat);
+                        if (seatBtn && !seatBtn.disabled) {
+                            seatBtn.classList.add("active");
+                            updatePaymentLink();
+                        }
+                    }
+                }
             } else {
-                back.href = "koncert.html"; // fallback
+                updatePaymentLink();
             }
         </script>
 

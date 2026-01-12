@@ -362,3 +362,98 @@ input[type="range"] {
   font-weight: bold;
   color: black;
 }
+
+
+/* === UX/Heurystyki: spójne przyciski i komunikaty === */
+.btn {
+    display: inline-block;
+    padding: 12px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.btn:hover { filter: brightness(0.96); }
+.btn:active { transform: translateY(1px); }
+
+.btn-primary { background: #1e90ff; color: #fff; }
+.btn-success { background: #28a745; color: #fff; }
+.btn-secondary { background: #f2f2f2; color: #222; border-color: #d7d7d7; }
+
+.btn[aria-disabled="true"], .btn.disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.disabled-link {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    vertical-align: middle;
+    margin-left: 8px;
+}
+
+.tag-wip {
+    background: #f2f2f2;
+    color: #333;
+    border: 1px solid #d7d7d7;
+}
+
+/* czytelność */
+body { line-height: 1.5; }
+p { max-width: 70ch; }
+
+/* krok po kroku w zakupie */
+.stepper {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: 0 0 14px 0;
+    list-style: none;
+}
+
+.stepper li {
+    padding: 8px 10px;
+    border-radius: 999px;
+    border: 1px solid #e0e6ef;
+    background: #f8fbff;
+    font-weight: 700;
+}
+
+.stepper li.active {
+    border-color: #1e90ff;
+    background: #eaf4ff;
+}
+
+.summary-box {
+    border: 1px solid #e0e6ef;
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 12px;
+    margin: 12px 0 14px 0;
+}
+
+.info {
+    border: 1px solid #e0e6ef;
+    background: #f8fbff;
+    border-radius: 10px;
+    padding: 12px;
+    margin: 12px 0;
+}
+
+.info-warning {
+    border-color: #f0d38a;
+    background: #fff7df;
+}
