@@ -5,6 +5,28 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
     <title>Wybór miejsca</title>
+    <style>
+        /* podświetlenie wybranego sektora/miejsca */
+        .sektor.active, .lista-miejsc button.active {
+            background-color: #1e90ff;
+            color: white;
+            border-color: #1e90ff;
+        }
+        .sektor {
+            border: 2px solid #1e90ff;
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .lista-miejsc button {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .lista-miejsc button[disabled] {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 
 <body class="main-page">
@@ -32,20 +54,17 @@
         text-align:center;">
 
                 <!-- sektor -->
-                <div onclick="pokazMiejsca('A')"
-                    style="border:2px solid #1e90ff; padding:20px; border-radius:8px; cursor:pointer;">
+                <div id="sektor-A" class="sektor" onclick="pokazMiejsca('A')">
                     <h3>Sektor A</h3>
                     <p>Najbliżej sceny</p>
                 </div>
 
-                <div onclick="pokazMiejsca('B')"
-                    style="border:2px solid #1e90ff; padding:20px; border-radius:8px; cursor:pointer;">
+                <div id="sektor-B" class="sektor" onclick="pokazMiejsca('B')">
                     <h3>Sektor B</h3>
                     <p>Miejsca centralne</p>
                 </div>
 
-                <div onclick="pokazMiejsca('C')"
-                    style="border:2px solid #1e90ff; padding:20px; border-radius:8px; cursor:pointer;">
+                <div id="sektor-C" class="sektor" onclick="pokazMiejsca('C')">
                     <h3>Sektor C</h3>
                     <p>Najtańsze miejsca</p>
                 </div>
@@ -58,9 +77,9 @@
             <div id="miejsca-A" class="lista-miejsc" style="display:none;">
                 <h2>Miejsca – Sektor A</h2>
                 <div style="display:flex; gap:10px;">
-                    <button style="padding:10px;">A1</button>
-                    <button style="padding:10px;">A2</button>
-                    <button style="padding:10px; background:#ccc;">A3 (zajęte)</button>
+                    <button>A1</button>
+                    <button>A2</button>
+                    <button disabled>A3 (zajęte)</button>
                 </div>
             </div>
 
@@ -68,9 +87,9 @@
             <div id="miejsca-B" class="lista-miejsc" style="display:none;">
                 <h2>Miejsca – Sektor B</h2>
                 <div style="display:flex; gap:10px;">
-                    <button style="padding:10px;">B5</button>
-                    <button style="padding:10px;">B6</button>
-                    <button style="padding:10px;">B7</button>
+                    <button>B5</button>
+                    <button>B6</button>
+                    <button>B7</button>
                 </div>
             </div>
 
@@ -78,9 +97,9 @@
             <div id="miejsca-C" class="lista-miejsc" style="display:none;">
                 <h2>Miejsca – Sektor C</h2>
                 <div style="display:flex; gap:10px;">
-                    <button style="padding:10px;">C1</button>
-                    <button style="padding:10px;">C2</button>
-                    <button style="padding:10px; background:#ccc;">C3 (zajęte)</button>
+                    <button>C1</button>
+                    <button>C2</button>
+                    <button disabled>C3 (zajęte)</button>
                 </div>
             </div>
 
@@ -93,34 +112,56 @@
         </section>
 
         <script>
+            // wybór sektora i wyświetlenie miejsc
             function pokazMiejsca(sektor) {
-                // ukryj wszystkie
+                // ukryj wszystkie listy miejsc
                 document.querySelectorAll('.lista-miejsc').forEach(div => {
                     div.style.display = 'none';
                 });
 
-                // pokaż wybrany
+                // usuń podświetlenie z wszystkich sektorów
+                document.querySelectorAll('.sektor').forEach(div => {
+                    div.classList.remove('active');
+                });
+
+                // podświetl wybrany sektor
+                const sektorDiv = document.getElementById('sektor-' + sektor);
+                if (sektorDiv) sektorDiv.classList.add('active');
+
+                // pokaż miejsca dla sektora
                 document.getElementById('miejsca-' + sektor).style.display = 'block';
 
                 // scroll do miejsc
                 document.getElementById('miejsca-' + sektor).scrollIntoView({ behavior: 'smooth' });
             }
+
+            // podświetlanie wybranego miejsca
+            document.querySelectorAll('.lista-miejsc button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // ignoruj przyciski zajęte
+                    if (btn.disabled) return;
+
+                    // usuń active ze wszystkich przycisków w tym sektorze
+                    btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+
+                    // dodaj active do klikniętego
+                    btn.classList.add('active');
+                });
+            });
+
+            // link powrotu
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get("id");
+
+            const back = document.getElementById("powrotLink");
+            if (id) {
+                back.href = "koncert.html?id=" + id;
+            } else {
+                back.href = "koncert.html"; // fallback
+            }
         </script>
 
-
     </main>
-
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get("id");
-
-        const back = document.getElementById("powrotLink");
-        if (id) {
-            back.href = "koncert.html?id=" + id;
-        } else {
-            back.href = "koncert.html"; // fallback
-        }
-    </script>
 
 </body>
 
