@@ -146,6 +146,15 @@ aside li {
     background: #eef4ff;
 }
 
+.submenu li label {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+    padding: 6px 10px;
+    box-sizing: border-box;
+}
+
 
 main {
     grid-area: main;

@@ -41,9 +41,21 @@
             <li class="dropdown">
                 Gatunek
                 <ul class="submenu">
-                    <li> <input type="checkbox" value="Pop"> Pop</li>
-                    <li> <input type="checkbox" value="Rock"> Rock</li>
-                    <li> <input type="checkbox" value="Techno"> Techno</li>
+                    <li> 
+                        <label>
+                            <input type="checkbox" value="Pop"> Pop
+                        </label>
+                    </li>
+                    <li> 
+                        <label>
+                            <input type="checkbox" value="Rock"> Rock
+                        </label>
+                    </li>
+                    <li> 
+                        <label>
+                            <input type="checkbox" value="Techno"> Techno
+                        </label>
+                    </li>
                 </ul>
             </li>
             <li class="dropdown">
@@ -53,6 +65,11 @@
                     <li>Do:<input id="priceMax" type="number"></li>
                 </ul>
             </li>
+            <section>
+                <h2>Wybrane Filtry:</h2>
+
+                <div id="selectedFilters"></div>
+            </section>
             <p></p>
             <a href="#" id="searchButton"
                 style="padding:10px 15px; background:#1e90ff; color:white; border-radius:8px; text-decoration:none;">
@@ -144,6 +161,46 @@
         const checkboxes = document.querySelectorAll(".dropdown input[type='checkbox']");
         const concerts = document.querySelectorAll("main section");
 
+        const selectedFiltersBox = document.getElementById("selectedFilters");
+
+        function updateSelectedFilters() {
+            let filters = [];
+
+            if (artistInput.value) filters.push("Artysta: " + artistInput.value);
+            if (cityInput.value) filters.push("Miasto: " + cityInput.value);
+
+            const checkedGenres = [...checkboxes]
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            if (checkedGenres.length > 0)
+                filters.push("Gatunek: " + checkedGenres.join(", "));
+
+            if (priceMin.value || priceMax.value) {
+                filters.push(`Cena: ${priceMin.value || 0} – ${priceMax.value || "∞"} zł`);
+            }
+
+            selectedFiltersBox.innerHTML = "";
+
+            if (filters.length === 0) {
+                selectedFiltersBox.innerHTML = "<em>Brak wybranych filtrów</em>";
+                return;
+            }
+
+            filters.forEach(f => {
+                const tag = document.createElement("span");
+                tag.textContent = f;
+                tag.style.padding = "5px 10px";
+                tag.style.margin = "5px";
+                tag.style.background = "#1e90ff";
+                tag.style.color = "white";
+                tag.style.borderRadius = "15px";
+                tag.style.display = "inline-block";
+
+                selectedFiltersBox.appendChild(tag);
+            });
+        }
+
         function applyFilters() {
             const artistVal = artistInput.value.toLowerCase();
             const cityVal = cityInput.value.toLowerCase();
@@ -194,6 +251,17 @@
             concerts.forEach(section => {
                 section.style.display = "";
             });
+
+            updateSelectedFilters()
+        });
+
+        artistInput.addEventListener("input", updateSelectedFilters);
+        cityInput.addEventListener("input", updateSelectedFilters);
+        priceMin.addEventListener("input", updateSelectedFilters);
+        priceMax.addEventListener("input", updateSelectedFilters);
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener("change", updateSelectedFilters);
         });
     </script>
 
