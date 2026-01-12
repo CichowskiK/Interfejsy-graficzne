@@ -1,6 +1,33 @@
 <!DOCTYPE html>
 <html lang="pl">
 
+<style>
+    .paymen_details {
+        margin-top: 15px;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        background: #f9f9f9;
+    }
+
+    .hidden {
+        display: none;
+    }
+    .button_buy{
+        font-size: 30px;
+        padding:12px 18px;
+        background:#28a745;
+        color:white;
+        border-radius:8px;
+        text-decoration:none;
+    }
+    .button_buy:hover{
+        background:#1b5a29;
+    }
+</style>
+
+
+
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
@@ -10,7 +37,7 @@
 <body class="main-page">
 
     <header>
-        <h1>Płatność</h1>
+        <h1>Wypełnij Folmularz</h1>
     </header>
 
     <nav>
@@ -21,28 +48,108 @@
 
     <main>
         <section>
-            <label>Imię</label><br>
-            <input type="text"><br><br>
+                    <form action="potwierdzenie.html">
+                    <div class="form_row">
+                        <h3>Dane klienta</h3>
+                    </div>
 
-            <label>Nazwisko</label><br>
-            <input type="text"><br><br>
+                    <div class="form_row">
+                        <label for="name">Imie:*</label>
+                        <input type="text" id="name" name="name" required><br><br>
+                    </div>
+                    <div class="form_row">
+                        <label for="last_name">Nazwisko:*</label>
+                        <input type="text" id="last_name" name="last_name" required><br><br>
+                    </div>
+                    <div class="form_row">
+                        <label for="email">Adres e-mail:*</label>
+                        <input type="email" id="email" name="email" required><br><br>
+                    </div>
+                    <div class="form_row">
+                        <label for="tel_num">Numer telefonu:</label>
+                        <input type="tel" id="tel_num" name="tel_num" pattern="[0-9]{9}"><br><br>
+                    </div>
+                    <hr class="linia">
+                    <div class="form_row">
+                        <h3>Płatność*</h3>
+                    </div>
+                    
+                    <div class="form_row">
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="Przelew">
+                            Przelew Tradycjny
+                        </label>
 
-            <label>E-mail</label><br>
-            <input type="email"><br><br>
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="blik">
+                            Blik
+                        </label>
 
-            <label>Metoda płatności</label><br>
-            <select>
-                <option>Blik</option>
-                <option>Karta</option>
-            </select><br><br>
+                        <div id="transferData" class="paymen_details hidden">
+                            <p><strong>Odbiorca:</strong> Ticker Hero</p>
+                            <p><strong>Numer konta:</strong> 12 3456 7890 1234 5678 9012 3456</p>
+                            <p><strong>Kwota:</strong> 130.00 PLN</p>
+                            <p><strong>Tytuł przelewu:</strong> Zakup biletu: koncert (tytuł koncertu) i numer biletu (któy pokarze się na następnej stronie)</p>
+                        </div>
 
-            <a href="potwierdzenie.html"
-                style="padding:12px 18px; background:#28a745; color:white; border-radius:8px; text-decoration:none;">
-                Kupuję bilet
-            </a>
+                        <div id="blikData" class="paymen_details hidden">
+                            <p><strong>Kwota:</strong> 130.00 PLN</p>
+                            <label>Kod BLIK (6 cyfr)</label><br>
+                            <input type="text" id="blikCode" name="blik_code"
+                                pattern="[0-9]{6}" maxlength="6">
+                        </div>
+                    </div>
+                    <hr class="linia">
+                    <div class="form_row">
+                        <div class="Zgody">
+                            <div>
+                                <h3>Zgody:</h3>
+                            </div>
+                            <div class="Zgody_che">
+                                <label><input type="checkbox" name="regulamin" value="Tak" required>
+                                    Oświadczam, że zapoznałem(-am) się z regulaminem sprzedaży biletów oraz akceptuję jego treść. *
+                                </label><br><br>
+
+                            <div class="Zgody_che">
+                                <label><input type="checkbox" name="Rodo" value="Tak" required> 
+                                    Wyrażam zgodę na przetwarzanie moich danych osobowych w celu realizacji
+                                    zamówienia, zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (UE)
+                                    2016/679 (RODO). *
+                                </label><br><br>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="button_buy" type="submit" onclick="potwierdzenie.html">
+                        Kupuję bilet
+                    </button>
+                <p>*Pola oznaczone gwiazdką są obowiązkowe</p>
+            </form>
+    </div>
         </section>
     </main>
 
 </body>
+
+<script>
+    const paymentRadios = document.querySelectorAll('input[name="payment"]');
+    const transferData = document.getElementById('transferData');
+    const blikData = document.getElementById('blikData');
+
+    paymentRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            if (radio.value === 'Przelew') {
+                transferData.classList.remove('hidden');
+                blikData.classList.add('hidden');
+                blikInput.required = false;
+            }
+
+            if (radio.value === 'blik') {
+                blikData.classList.remove('hidden');
+                transferData.classList.add('hidden');
+                blikInput.required = true;
+            }
+        });
+    });
+</script>
 
 </html>
