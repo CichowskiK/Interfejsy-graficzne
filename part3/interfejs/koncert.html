@@ -4,22 +4,50 @@
         1: {
             title: "Freddie Mercury Rock-Operowo",
             img: "https://www.ebilet.pl/media/cms/media/xrhpj4s5/freddie-mercury-opera-show-552x736-px-e2f617db-f1c6-4e8d-a457-635fc1b031af.webp",
-            description: "Nowe, niezwykłe spojrzenie na utwory Queen."
+            description: "Nowe, niezwykłe spojrzenie na utwory Queen.",
+            artist: "Zespół operowy Teatru Wielkiego im. Stanisława Moniuszki w Poznaniu",
+            location: "Kraków",
+            place: "Tauron Arena Kraków",
+            date: "21.11.2026",
+            time: "20:30",
+            event_organizer: "Teatr Wielki im. Stanisława Moniuszki w Poznaniu",
+            genre: "muzyka klasyczna"
         },
         2: {
             title: "Michał Wiśniewski Akustycznie",
             img: "https://www.ebilet.pl/media/cms/media/msundxlx/552x736-572dbcc9-1658-6521-e1a4-683e025dca76-86ed122f-6ff1-4558-bf24-dde28dfe1922.webp",
-            description: "Akustyczne aranżacje największych przebojów Michała Wiśniewskiego."
+            description: "Akustyczne aranżacje największych przebojów Michała Wiśniewskiego.",
+            artist: "Michał Wiśniewski",
+            location: "Warszawa",
+            place: "Klub Stodoła",
+            date: "11.02.2026",
+            time: "19:00",
+            event_organizer: "Michał_Wiśniewski.inc",
+            genre: "pop-rock"
         },
         3: {
             title: "Piotr Rubik „Świat się nie kończy...”",
             img: "https://www.ebilet.pl/media/cms/media/2gqbfdqf/rubik_swiat_656x369-1-6b92428f-6a83-446c-949f-4b3c0f134fd5.webp",
-            description: "Pełne energii i emocji kompozycje Piotra Rubika."
+            description: "Pełne energii i emocji kompozycje Piotra Rubika.",
+            artist: "Piotr Rubik",
+            location: "Szczecin",
+            place: "Filharmonia im. Mieczysława Karłowicza w Szczecienie",
+            date: "03.03.2026",
+            time: "20:30",
+            event_organizer: "Piotr Rubik",
+            genre: "muzyka klasyczna crossover"
         },
         4: {
             title: "Maryla Rodowicz – Największe Przeboje na Żywo",
             img: "https://biletyna.pl/file/get/id/173202",
-            description: "Największe przeboje Maryli Rodowicz w nowych aranżacjach."
+            description: "Największe przeboje Maryli Rodowicz w nowych aranżacjach.",
+            artist: "Maryla Rodowicz",
+            location: "Kraków",
+            place: "Tauron Arena Kraków",
+            date: "21.07.2026",
+            time: "20:30",
+            event_organizer: "Maryla Rodowicz",
+            genre: "muzyka pop"
         }
     };
 
@@ -33,7 +61,11 @@
         document.getElementById("title").textContent = data.title;
         document.getElementById("img").src = data.img;
         document.getElementById("description").textContent = data.description;
-
+        document.getElementById("artist").innerHTML = "<strong>Artysta:</strong> " + data.artist;
+        document.getElementById("location").innerHTML = "<strong>Miasto:</strong> " + data.location;
+        document.getElementById("place").innerHTML = "<strong>Miejsce:</strong> " + data.place;
+        document.getElementById("date").innerHTML = "<strong>Data:</strong> " + data.date;
+        document.getElementById("time").innerHTML = "<strong>Godzina:</strong> " + data.time;
         const buyButton = document.getElementById("kupBilet");
         buyButton.href = `wybor_miejsca.html?id=${id}`;
     };
@@ -64,6 +96,11 @@
         <section>
             <img id="img">
             <p id="description"></p>
+            <p id="artist"></p>
+            <p id="location"></p>
+            <p id="place"></p>
+            <p id="date"></p>
+            <p id="time"></p>
             <a id="kupBilet"
                 style="padding:12px 18px; background:#1e90ff; color:white; border-radius:8px; text-decoration:none;">
                 Kup bilet
