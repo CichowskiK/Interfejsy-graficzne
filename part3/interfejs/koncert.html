@@ -1,124 +1,158 @@
-<script>
-    const concertsData = {
-        1: {
-            title: "Freddie Mercury Rock-Operowo",
-            img: "https://www.ebilet.pl/media/cms/media/xrhpj4s5/freddie-mercury-opera-show-552x736-px-e2f617db-f1c6-4e8d-a457-635fc1b031af.webp",
-            description: "Nowe, niezwykłe spojrzenie na utwory Queen.",
-            artist: "Zespół operowy Teatru Wielkiego im. Stanisława Moniuszki w Poznaniu",
-            location: "Kraków",
-            place: "Tauron Arena Kraków",
-            date: "21.11.2026",
-            time: "20:30",
-            event_organizer: "Teatr Wielki im. Stanisława Moniuszki w Poznaniu",
-            genre: "muzyka klasyczna"
-        },
-        2: {
-            title: "Michał Wiśniewski Akustycznie",
-            img: "https://www.ebilet.pl/media/cms/media/msundxlx/552x736-572dbcc9-1658-6521-e1a4-683e025dca76-86ed122f-6ff1-4558-bf24-dde28dfe1922.webp",
-            description: "Akustyczne aranżacje największych przebojów Michała Wiśniewskiego.",
-            artist: "Michał Wiśniewski",
-            location: "Warszawa",
-            place: "Klub Stodoła",
-            date: "11.02.2026",
-            time: "19:00",
-            event_organizer: "Michał_Wiśniewski.inc",
-            genre: "pop-rock"
-        },
-        3: {
-            title: "Piotr Rubik „Świat się nie kończy...”",
-            img: "https://www.ebilet.pl/media/cms/media/2gqbfdqf/rubik_swiat_656x369-1-6b92428f-6a83-446c-949f-4b3c0f134fd5.webp",
-            description: "Pełne energii i emocji kompozycje Piotra Rubika.",
-            artist: "Piotr Rubik",
-            location: "Szczecin",
-            place: "Filharmonia im. Mieczysława Karłowicza w Szczecienie",
-            date: "03.03.2026",
-            time: "20:30",
-            event_organizer: "Piotr Rubik",
-            genre: "muzyka klasyczna crossover"
-        },
-        4: {
-            title: "Maryla Rodowicz – Największe Przeboje na Żywo",
-            img: "https://biletyna.pl/file/get/id/173202",
-            description: "Największe przeboje Maryli Rodowicz w nowych aranżacjach.",
-            artist: "Maryla Rodowicz",
-            location: "Kraków",
-            place: "Tauron Arena Kraków",
-            date: "21.07.2026",
-            time: "20:30",
-            event_organizer: "Maryla Rodowicz",
-            genre: "muzyka pop"
-        }
-    };
-
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-    const data = concertsData[id];
-
-    window.onload = () => {
-        const missingBox = document.getElementById("missingConcert");
-        const buyButton = document.getElementById("kupBilet");
-
-        if (!data) {
-            document.getElementById("title").textContent = "Nie wybrano koncertu";
-            if (missingBox) missingBox.style.display = "block";
-            if (buyButton) buyButton.style.display = "none";
-            return;
-        }
-
-        document.getElementById("title").textContent = data.title;
-        document.getElementById("img").src = data.img;
-        document.getElementById("img").alt = "Plakat koncertu: " + data.title;
-        document.getElementById("description").textContent = data.description;
-        document.getElementById("artist").innerHTML = "<strong>Artysta:</strong> " + data.artist;
-        document.getElementById("location").innerHTML = "<strong>Miasto:</strong> " + data.location;
-        document.getElementById("place").innerHTML = "<strong>Miejsce:</strong> " + data.place;
-        document.getElementById("date").innerHTML = "<strong>Data:</strong> " + data.date;
-        document.getElementById("time").innerHTML = "<strong>Godzina:</strong> " + data.time;
-
-        if (buyButton) buyButton.href = `wybor_miejsca.html?id=${id}`;
-    };
-</script>
-
 <!DOCTYPE html>
 <html lang="pl">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Koncert – szczegóły</title>
 </head>
 
-<body class="main-page">
+<body class="concert-page">
 
     <header>
-        <h1 id="title"></h1>
+        <h1 id="title">Ładowanie...</h1>
     </header>
 
     <nav>
         <ul>
-            <li><a href="index.html">Powrót</a></li>
+            <li><a id="accountLink" href="Konto.html" style="display:none;">Konto</a></li>
+
+            <li><a href="index.html">Szukaj koncertów</a></li>
+            <li><a>Koncerty w twojej okolicy</a></li>
+
+            <li><a id="authBtn" href="login.html">Zaloguj się</a></li>
         </ul>
     </nav>
 
     <main>
-        
-        <div id="missingConcert" class="info info-warning" style="display:none;">
-            <strong>Nie wybrano koncertu.</strong> Wróć do listy i wybierz koncert ponownie.
-            <div style="margin-top:10px;"><a class="btn btn-secondary" href="index.html">Wróć do listy koncertów</a></div>
-        </div>
-<section>
-            <img id="img">
-            <p id="description"></p>
-            <p id="artist"></p>
-            <p id="location"></p>
-            <p id="place"></p>
-            <p id="date"></p>
-            <p id="time"></p>
-            <a id="kupBilet" class="btn btn-primary">
-                Kup bilet
+        <div class="back-bar">
+            <a href="index.html" class="btn btn-secondary" style="font-size: 0.9em;">
+                &larr; Powrót do listy
             </a>
+        </div>
+
+        <div id="missingConcert" class="info info-warning" style="display:none;">
+            <strong>Nie znaleziono koncertu.</strong>
+            <div style="margin-top:10px;">
+                <a class="btn btn-secondary" href="index.html">Wróć do listy koncertów</a>
+            </div>
+        </div>
+
+        <section id="concertContent" class="concert-details">
+            <div>
+                <img id="img" src="" alt="">
+            </div>
+
+            <div class="details-text">
+                <h2 style="margin-top:0">Opis wydarzenia</h2>
+                <p id="description"></p>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+                <p id="artist"></p>
+                <p id="genre"></p>
+                <p id="location"></p>
+                <p id="place"></p>
+                <p id="date"></p>
+                <p id="time"></p>
+
+                <p id="price" class="price-tag"></p>
+
+                <a id="kupBilet" class="btn btn-primary" href="#">
+                    Kup bilet
+                </a>
+            </div>
         </section>
     </main>
+
+    <script>
+        const concertsData = {
+            1: {
+                title: "Freddie Mercury Rock-Operowo",
+                img: "https://www.ebilet.pl/media/cms/media/xrhpj4s5/freddie-mercury-opera-show-552x736-px-e2f617db-f1c6-4e8d-a457-635fc1b031af.webp",
+                description: "Nowe, niezwykłe spojrzenie na utwory Queen. Piosenki jednego z najpopularniejszych wokalistów rockowych na świecie zostały zaaranżowane w unikalny sposób na wokalistów operowych oraz fortepian.",
+                artist: "Zespół operowy Teatru Wielkiego",
+                location: "Łódź",
+                place: "Teatr Wielki",
+                date: "21.11.2026",
+                time: "20:30",
+                genre: "Rock / Opera",
+                price: 150
+            },
+            2: {
+                title: "Michał Wiśniewski Akustycznie",
+                img: "https://www.ebilet.pl/media/cms/media/msundxlx/552x736-572dbcc9-1658-6521-e1a4-683e025dca76-86ed122f-6ff1-4558-bf24-dde28dfe1922.webp",
+                description: "Akustyczne aranżacje największych przebojów Michała Wiśniewskiego i zespołu Ich Troje.",
+                artist: "Michał Wiśniewski",
+                location: "Kraków",
+                place: "Klub Studio",
+                date: "11.02.2026",
+                time: "19:00",
+                genre: "Pop / Rock",
+                price: 700
+            },
+            3: {
+                title: "Piotr Rubik „Świat się nie kończy...”",
+                img: "https://www.ebilet.pl/media/cms/media/2gqbfdqf/rubik_swiat_656x369-1-6b92428f-6a83-446c-949f-4b3c0f134fd5.webp",
+                description: "Pełne energii i emocji kompozycje Piotra Rubika.",
+                artist: "Piotr Rubik",
+                location: "Poznań",
+                place: "Sala Ziemi",
+                date: "03.03.2026",
+                time: "20:30",
+                genre: "Pop",
+                price: 300
+            },
+            4: {
+                title: "Maryla Rodowicz – Największe Przeboje",
+                img: "https://biletyna.pl/file/get/id/173202",
+                description: "Największe przeboje Maryli Rodowicz w nowych aranżacjach.",
+                artist: "Maryla Rodowicz",
+                location: "Warszawa",
+                place: "Torwar",
+                date: "21.07.2026",
+                time: "20:30",
+                genre: "Pop",
+                price: 400
+            }
+        };
+
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+        const data = concertsData[id];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const missingBox = document.getElementById("missingConcert");
+            const contentBox = document.getElementById("concertContent");
+            const buyButton = document.getElementById("kupBilet");
+            const titleElement = document.getElementById("title");
+
+            if (!data) {
+                titleElement.textContent = "Błąd";
+                if (missingBox) missingBox.style.display = "block";
+                if (contentBox) contentBox.style.display = "none";
+                return;
+            }
+
+            titleElement.textContent = data.title;
+            document.getElementById("img").src = data.img;
+            document.getElementById("img").alt = "Plakat koncertu: " + data.title;
+            document.getElementById("description").textContent = data.description;
+
+            document.getElementById("artist").innerHTML = "<strong>Artysta:</strong> " + data.artist;
+            document.getElementById("genre").innerHTML = "<strong>Gatunek:</strong> " + data.genre;
+            document.getElementById("location").innerHTML = "<strong>Miasto:</strong> " + data.location;
+            document.getElementById("place").innerHTML = "<strong>Miejsce:</strong> " + data.place;
+            document.getElementById("date").innerHTML = "<strong>Data:</strong> " + data.date;
+            document.getElementById("time").innerHTML = "<strong>Godzina:</strong> " + data.time;
+
+            document.getElementById("price").innerHTML = "Cena biletu: od " + data.price + " zł";
+
+            if (buyButton) {
+                buyButton.href = `wybor_miejsca.html?id=${id}`;
+            }
+        });
+    </script>
+    <script src="auth.js"></script>
 </body>
 
 </html>

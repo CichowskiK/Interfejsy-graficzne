@@ -1,125 +1,101 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <title>Ustawienia powiadomień – TicketHero</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="Konto">
+
+<body class="account-page">
     <header>
         <h1>Ustawienia powiadomień</h1>
     </header>
 
     <nav>
         <ul>
-            <li><a href="Konto.html">Konto</a></li>
+            <li><a id="accountLink" href="Konto.html" style="display:none;">Konto</a></li>
             <li><a href="index.html">Szukaj koncertów</a></li>
-            <li><a class="disabled-link" href="#" aria-disabled="true">Koncerty w twojej okolicy <span class="tag tag-wip">WIP</span></a></li>
-            <li><a class="disabled-link" href="#" aria-disabled="true">Wyloguj się <span class="tag tag-wip">WIP</span></a></li>
+            <li><a>Koncerty w twojej okolicy</a></li>
+            <li><a id="authBtn" href="login.html">Zaloguj się</a></li>
         </ul>
     </nav>
 
     <main>
-        <section id="powiadomienia" class="card">
+        <section id="powiadomienia" class="card"
+            style="max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; border: 1px solid #e0e6ef;">
+
             <p class="intro">
-                Tutaj możesz ustawić, o jakich koncertach mamy Cię informować
-                i w jaki sposób chcesz otrzymywać powiadomienia.
+                Tutaj możesz ustawić, o jakich koncertach mamy Cię informować.
             </p>
 
             <form id="notifications-form">
+
                 <fieldset class="block">
-                    <legend>Artyści, o których chcesz otrzymywać powiadomienia</legend>
-                    <p class="hint">
-                        Zaznacz wykonawców, których koncertów nie chcesz przegapić.
-                    </p>
-                    <div class="field-row">
-                        <label>
-                            <input type="checkbox" name="artist" checked>
-                            Kwiat Jabłoni
-                        </label>
-                        <label>
-                            <input type="checkbox" name="artist" checked>
-                            Dawid Podsiadło
-                        </label>
-                        <label>
-                            <input type="checkbox" name="artist">
-                            Sanah
-                        </label>
-                        <label>
-                            <input type="checkbox" name="artist">
-                            Måneskin
-                        </label>
+                    <legend>Artyści</legend>
+                    <p class="hint">Wpisz nazwę artysty i kliknij "Dodaj".</p>
+                    <div class="artist-input-wrapper">
+                        <input type="text" id="artistInput" placeholder="np. Metallica" list="suggested-artists"
+                            autocomplete="off">
+                        <datalist id="suggested-artists">
+                            <option value="Dawid Podsiadło">
+                            <option value="Sanah">
+                            <option value="Måneskin">
+                        </datalist>
+                        <button type="button" id="addArtistBtn" class="btn btn-secondary">Dodaj</button>
                     </div>
+                    <div id="tagsContainer" class="tags-container"></div>
                 </fieldset>
 
                 <fieldset class="block">
                     <legend>Lokalizacja i odległość</legend>
                     <div class="field-column">
-                        <label>
-                            Twoje miasto bazowe:
-                            <input type="text" name="city" placeholder="np. Warszawa">
-                        </label>
-                        <div class="slider-container">
-                    
-                    <label>
-                        Odległość: <span id="value">50</span> km
-                    </label>
 
-                    <div class="slider-box">
-                        <input
-                            type="range"
-                            id="distance"
-                            min="0"
-                            max="200"
-                            value="50"
-                            >
+                        <label for="cityInput" style="display:block; margin-bottom:5px;">Twoje miasto bazowe:</label>
 
-                        <div class="labels">
-                        <span style="left:12.5%" data-value="25">25</span>
-                        <span style="left:25%" data-value="50">50</span>
-                        <span style="left:50%" data-value="100">100</span>
-                        <span style="left:75%" data-value="150">150</span>
-                        <span style="left:100%" data-value="200">200</span>
+                        <div class="location-wrapper">
+                            <input type="text" id="cityInput" placeholder="Zacznij pisać nazwę miasta..."
+                                class="form-input" autocomplete="off">
+                            <div id="suggestionsList" class="suggestions-list"></div>
                         </div>
-                    </div>
-                    
+
+                        <div id="selectedLocationDisplay" class="selected-location-badge" style="display: none;">
+                            <div>
+                                <span class="location-icon">📍</span>
+                                <span id="confirmedCityText">Warszawa</span>
+                            </div>
+                            <span class="remove-location" title="Zmień miasto" onclick="clearLocation()">ZMIEŃ</span>
+                        </div>
 
 
-                        <script>
-                            const slider = document.getElementById("distance");
-                            const output = document.getElementById("value");
-                            const labels = document.querySelectorAll(".labels span");
-
-                            output.textContent = slider.value;
-
-                            slider.addEventListener("input", () => {
-                                output.textContent = slider.value;
-                            });
-
-                            labels.forEach(label => {
-                                label.addEventListener("click", () => {
-                                const val = label.dataset.value;
-                                slider.value = val;
-                                output.textContent = val;
-                                slider.dispatchEvent(new Event("input"));
-                                });
-                            });
-                        </script>
+                        <div class="slider-container" style="margin-top: 20px;">
+                            <label>
+                                Maksymalna odległość: <span id="value"
+                                    style="font-weight: bold; color: #1e90ff;">50</span> km
+                            </label>
+                            <div class="slider-box">
+                                <input type="range" id="distance" min="0" max="200" value="50">
+                                <div class="labels">
+                                    <span data-value="0">0 km</span>
+                                    <span data-value="50">50 km</span>
+                                    <span data-value="100">100 km</span>
+                                    <span data-value="150">150 km</span>
+                                    <span data-value="200">200 km</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </fieldset>
 
                 <fieldset class="block">
                     <legend>Jak chcesz otrzymywać powiadomienia?</legend>
-                    <p class="hint">
-                        Możesz wybrać kilka form. Poniżej widzisz podgląd przykładowych powiadomień.
-                    </p>
 
                     <div class="notification-types">
+
                         <div class="channel-option">
                             <label class="channel-header">
-                                <input type="checkbox" name="channel" value="email" checked>
-                                E-mail
+                                <input type="checkbox" name="channel" value="email" checked> E-mail
                             </label>
                             <div class="channel-preview">
                                 <strong>Tytuł:</strong> Nowy koncert Twojego ulubionego artysty<br>
@@ -129,53 +105,218 @@
 
                         <div class="channel-option">
                             <label class="channel-header">
-                                <input type="checkbox" name="channel" value="push" checked>
-                                Powiadomienie push
+                                <input type="checkbox" name="channel" value="push" checked> Powiadomienie push
                             </label>
                             <div class="channel-preview">
-                                <span> TicketHero:</span><br>
+                                <span>TicketHero:</span><br>
                                 <span>„Dawid Podsiadło zagra w Twoim mieście za 3 tygodnie”</span>
                             </div>
                         </div>
 
                         <div class="channel-option">
                             <label class="channel-header">
-                                <input type="checkbox" name="channel" value="sms">
-                                SMS
+                                <input type="checkbox" name="channel" value="sms"> SMS
                             </label>
                             <div class="channel-preview">
                                 <span>[SMS] TicketHero:</span><br>
                                 <span>„Nowy koncert w Twojej okolicy. Sprawdź szczegóły w aplikacji.”</span>
                             </div>
                         </div>
-                    </div>
-                </fieldset> 
 
-                <div class="actions">
-                    <a href="Konto.html" class="button secondary">Anuluj</a>
-                    <button type="submit" class="button primary">Zapisz ustawienia</button>
+                    </div>
+                </fieldset>
+
+                <div class="actions" style="margin-top: 20px; text-align: right;">
+                    <a href="Konto.html" class="btn btn-secondary">Anuluj</a>
+                    <button type="submit" class="btn btn-primary">Zapisz ustawienia</button>
                 </div>
 
-                <p id="success-message"
-                   class="info-success hidden"
-                   role="status"
-                   aria-hidden="true">
-                    Twoje ustawienia powiadomień zostały <strong>pomyślnie zapisane</strong>.
+                <p id="success-message" class="info-success hidden" role="status" aria-hidden="true"
+                    style="margin-top: 15px; display: none;">
+                    Zapisano pomyślnie!
                 </p>
             </form>
         </section>
     </main>
 
+    <script src="auth.js"></script>
     <script>
+        requireAuth();
+        const user = getCurrentUser();
+
+        // --- ZMIENNE UI ---
+        const cityInput = document.getElementById('cityInput');
+        const suggestionsList = document.getElementById('suggestionsList');
+        const selectedLocationDisplay = document.getElementById('selectedLocationDisplay');
+        const confirmedCityText = document.getElementById('confirmedCityText');
+
+        let finalCity = "";
+
+        // --- 1. LOGIKA AUTO-UZUPEŁNIANIA (ULEPSZONA) ---
+        let timeoutId;
+        cityInput.addEventListener('input', function () {
+            clearTimeout(timeoutId);
+            const query = this.value.trim();
+            if (query.length < 3) {
+                suggestionsList.style.display = 'none';
+                return;
+            }
+            // Opóźnienie 300ms
+            timeoutId = setTimeout(() => { fetchCities(query); }, 300);
+        });
+
+        async function fetchCities(query) {
+            try {
+                // Featuretype=settlement prosi API o zwracanie głównie miejscowości, a nie ulic
+                const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=10&accept-language=pl&featuretype=settlement`;
+                const response = await fetch(url);
+                const data = await response.json();
+                showSuggestions(data);
+            } catch (error) { console.error(error); }
+        }
+
+        function showSuggestions(cities) {
+            suggestionsList.innerHTML = '';
+
+            // Zbiór do wyłapywania duplikatów (np. dwa razy Lublin)
+            const uniqueNames = new Set();
+            let count = 0;
+
+            if (cities.length === 0) { suggestionsList.style.display = 'none'; return; }
+
+            cities.forEach(place => {
+                // Limitujemy wyświetlanie do max 5 unikalnych wyników
+                if (count >= 5) return;
+
+                const addr = place.address;
+                if (!addr) return;
+
+                // Szukamy nazwy miejscowości w różnych polach (kolejność ważna!)
+                // Warszawa często siedzi w 'city' lub 'municipality'
+                const cityName = addr.city || addr.town || addr.village || addr.municipality || addr.county;
+                const country = addr.country || "";
+
+                // Jeśli API zwróciło coś, co nie jest miastem (np. sam kraj albo województwo), pomijamy
+                if (!cityName) return;
+
+                const displayName = `${cityName}, ${country}`;
+
+                // --- KLUCZOWE: USUWANIE DUPLIKATÓW ---
+                // Jeśli już mamy taką nazwę na liście, pomiń ten wynik
+                if (uniqueNames.has(displayName)) return;
+
+                // Dodajemy do zbioru i wyświetlamy
+                uniqueNames.add(displayName);
+                count++;
+
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.textContent = displayName;
+                div.addEventListener('click', () => { selectCity(displayName); });
+                suggestionsList.appendChild(div);
+            });
+
+            // Jeśli po filtrowaniu lista jest pusta, ukryj ją
+            if (count === 0) {
+                suggestionsList.style.display = 'none';
+            } else {
+                suggestionsList.style.display = 'block';
+            }
+        }
+
+        function selectCity(name) {
+            finalCity = name;
+            confirmedCityText.textContent = name;
+            cityInput.style.display = 'none';
+            suggestionsList.style.display = 'none';
+            selectedLocationDisplay.style.display = 'flex';
+        }
+
+        window.clearLocation = function () {
+            finalCity = "";
+            cityInput.value = "";
+            cityInput.style.display = 'block';
+            selectedLocationDisplay.style.display = 'none';
+            cityInput.focus();
+        }
+
+        document.addEventListener('click', function (e) {
+            if (!cityInput.contains(e.target) && !suggestionsList.contains(e.target)) {
+                suggestionsList.style.display = 'none';
+            }
+        });
+
+        // --- 2. LOGIKA ARTYSTÓW (Bez zmian) ---
+        const artistInput = document.getElementById('artistInput');
+        const tagsContainer = document.getElementById('tagsContainer');
+        let myArtists = [];
+
+        function renderTags() {
+            tagsContainer.innerHTML = '';
+            myArtists.forEach((artist, index) => {
+                const tag = document.createElement('div');
+                tag.className = 'artist-tag';
+                tag.innerHTML = `${artist} <span class="remove-tag" onclick="removeArtist(${index})">&times;</span>`;
+                tagsContainer.appendChild(tag);
+            });
+        }
+        function addArtist() {
+            const val = artistInput.value.trim();
+            if (val && !myArtists.includes(val)) {
+                myArtists.push(val);
+                renderTags();
+                artistInput.value = '';
+            }
+        }
+        window.removeArtist = function (index) { myArtists.splice(index, 1); renderTags(); }
+        document.getElementById('addArtistBtn').addEventListener("click", addArtist);
+        artistInput.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); addArtist(); } });
+
+        // --- 3. SUWAK I ZAPIS ---
+        const slider = document.getElementById("distance");
+        const output = document.getElementById("value");
+        slider.addEventListener("input", () => output.textContent = slider.value);
+        document.querySelectorAll(".labels span").forEach(l => l.addEventListener("click", () => {
+            slider.value = l.dataset.value;
+            output.textContent = slider.value;
+        }));
+
+        function loadSettings() {
+            if (user && user.settings) {
+                const s = user.settings;
+                if (s.city) selectCity(s.city);
+                if (s.distance) { slider.value = s.distance; output.textContent = s.distance; }
+                if (s.artists) { myArtists = s.artists; renderTags(); }
+                if (s.channels) {
+                    document.querySelectorAll('input[name="channel"]').forEach(el => {
+                        el.checked = s.channels.includes(el.value);
+                    });
+                }
+            }
+        }
+
         const form = document.getElementById('notifications-form');
         const successMessage = document.getElementById('success-message');
 
         form.addEventListener('submit', function (event) {
-            event.preventDefault(); 
-            successMessage.classList.remove('hidden');
-            successMessage.setAttribute('aria-hidden', 'false');
-            successMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            event.preventDefault();
+            if (artistInput.value.trim() !== "") addArtist();
+
+            const newSettings = {
+                city: finalCity,
+                distance: slider.value,
+                artists: myArtists,
+                channels: Array.from(document.querySelectorAll('input[name="channel"]:checked')).map(el => el.value)
+            };
+
+            if (saveUserPreferences(newSettings)) {
+                successMessage.style.display = 'block';
+                setTimeout(() => successMessage.style.display = 'none', 3000);
+            }
         });
+
+        loadSettings();
     </script>
 </body>
+
 </html>
