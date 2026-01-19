@@ -1051,3 +1051,37 @@ legend {
     border: 1px dashed #ccc;
     color: #666;
 }
+
+/* =========================================
+   11. STYLIZACJA STRON LOGOWANIA I REJESTRACJI
+   ========================================= */
+
+.login-page main {
+    display: flex;
+    justify-content: center;
+    /* Centrowanie w poziomie */
+    align-items: center;
+    /* Centrowanie w pionie */
+    min-height: 80vh;
+    /* Minimalna wysokość, żeby formularz był na środku ekranu */
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    /* KLUCZOWE: Ogranicza szerokość formularza */
+    margin: 0 auto;
+    /* Dodatkowe centrowanie */
+    padding: 30px;
+
+    background-color: #ffffff;
+    border: 1px solid #e0e6ef;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
