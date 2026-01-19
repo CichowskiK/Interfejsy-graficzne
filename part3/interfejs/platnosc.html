@@ -1,53 +1,33 @@
 <!DOCTYPE html>
 <html lang="pl">
 
-<style>
-    .paymen_details {
-        margin-top: 15px;
-        padding: 12px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        background: #f9f9f9;
-    }
-
-    .hidden {
-        display: none;
-    }
-    .button_buy{
-        font-size: 30px;
-        padding:12px 18px;
-        background:#28a745;
-        color:white;
-        border-radius:8px;
-        text-decoration:none;
-    }
-    .button_buy:hover{
-        background:#1b5a29;
-    }
-</style>
-
-
-
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Płatność</title>
 </head>
 
-<body class="main-page">
+<body class="checkout-page">
 
     <header>
-        <h1>Wypełnij formularz</h1>
+        <h1>Finalizacja zakupu</h1>
     </header>
 
     <nav>
         <ul>
-            <li><a id="backToSeats" class="btn btn-secondary" href="#">Powrót do wyboru miejsc</a></li>
+            <li><a id="accountLink" href="Konto.html" style="display:none;">Konto</a></li>
+            <li><a href="index.html">Szukaj koncertów</a></li>
+            <li><a>Koncerty w twojej okolicy</a></li>
+            <li><a id="authBtn" href="login.html">Zaloguj się</a></li>
         </ul>
     </nav>
 
     <main>
-        
+        <div class="back-bar" style="margin-bottom: 20px; border-bottom: 1px solid #e0e6ef; padding-bottom: 10px;">
+            <a id="backToSeats" class="btn btn-secondary" href="#">&larr; Powrót do wyboru miejsc</a>
+        </div>
+
         <ul class="stepper" aria-label="Kroki zakupu">
             <li>1. Wybór miejsca</li>
             <li class="active">2. Płatność</li>
@@ -55,157 +35,238 @@
         </ul>
 
         <div id="missingPaymentContext" class="info info-warning" style="display:none;">
-            <strong>Brakuje informacji o koncercie / miejscu.</strong> Wróć do wyboru miejsc i spróbuj ponownie.
+            <strong>Brakuje informacji o zamówieniu.</strong> Wróć do wyboru miejsc i spróbuj ponownie.
         </div>
 
         <div class="summary-box" aria-live="polite">
-            <strong>Podsumowanie:</strong>
-            <div>Koncert ID: <span id="paySummaryId">—</span></div>
-            <div>Sektor: <span id="paySummarySector">—</span></div>
-            <div>Miejsce: <span id="paySummarySeat">—</span></div>
+            <strong>Podsumowanie zamówienia:</strong>
+            <div style="margin-top:5px;">
+                <span class="tag tag-wip">Koncert: <span id="paySummaryTitle">...</span></span>
+                <span class="tag tag-wip">Sektor: <span id="paySummarySector">—</span></span>
+                <span class="tag tag-wip">Miejsce: <span id="paySummarySeat">—</span></span>
+                <span class="tag tag-wip" style="background:#e6ffe6; border-color:#88cc88; font-size: 1.1em;">
+                    Do zapłaty: <span id="paySummaryPrice">—</span>
+                </span>
+            </div>
         </div>
-<section>
-                    <form id="paymentForm" action="potwierdzenie.html">
-                    <div class="form_row">
-                        <h3>Dane klienta</h3>
+
+        <section>
+            <form id="paymentForm" class="form-container">
+                <div class="form_row">
+                    <h3 style="margin-top:0;">Dane klienta</h3>
+                </div>
+
+                <div class="form_row" id="accountDataRow"
+                    style="background: #f0f8ff; padding: 10px; border-radius: 6px; border: 1px solid #cce5ff; margin-bottom: 15px; display: none;">
+                    <label style="margin:0; cursor:pointer; display:flex; align-items:center;">
+                        <input type="checkbox" id="fillFromAccount" style="width:auto; margin-right: 10px;">
+                        <span id="accountLabelText">Użyj danych z konta</span>
+                    </label>
+                </div>
+
+                <div class="form_row">
+                    <label for="name">Imię:*</label>
+                    <input type="text" id="name" name="name" required placeholder="Jan"
+                        pattern="[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ \-]+" title="Imię może zawierać tylko litery"
+                        oninvalid="this.setCustomValidity('Imię może zawierać tylko litery (bez cyfr)')"
+                        oninput="this.setCustomValidity('')">
+                </div>
+
+                <div class="form_row">
+                    <label for="last_name">Nazwisko:*</label>
+                    <input type="text" id="last_name" name="last_name" required placeholder="Kowalski"
+                        pattern="[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ \-]+" title="Nazwisko może zawierać tylko litery"
+                        oninvalid="this.setCustomValidity('Nazwisko może zawierać tylko litery (bez cyfr)')"
+                        oninput="this.setCustomValidity('')">
+                </div>
+
+                <div class="form_row">
+                    <label for="email">Adres e-mail:*</label>
+                    <input type="email" id="email" name="email" required placeholder="jan@example.com"
+                        oninvalid="this.setCustomValidity('Proszę podać poprawny adres e-mail')"
+                        oninput="this.setCustomValidity('')">
+                </div>
+
+                <div class="form_row">
+                    <label for="tel_num">Numer telefonu:</label>
+                    <input type="tel" id="tel_num" name="tel_num" pattern="[0-9]{9}" placeholder="123456789"
+                        title="Numer musi składać się z 9 cyfr"
+                        oninvalid="this.setCustomValidity('Proszę podać poprawny numer telefonu (9 cyfr)')"
+                        oninput="this.setCustomValidity('')">
+                </div>
+
+                <hr style="margin: 20px 0; border:0; border-top:1px solid #eee;">
+
+                <div class="form_row">
+                    <h3>Metoda płatności*</h3>
+                </div>
+
+                <div class="form_row">
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="Przelew" checked>
+                        <strong>Przelew Tradycyjny</strong>
+                    </label>
+
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="Blik">
+                        <strong>BLIK</strong>
+                    </label>
+
+                    <div id="transferData" class="payment-details-box hidden">
+                        <p><strong>Odbiorca:</strong> Ticket Hero Sp. z o.o.</p>
+                        <p><strong>Nr konta:</strong> 12 3456 7890 1234 5678 9012 3456</p>
+                        <p><strong>Kwota:</strong> <span class="dynamic-price">...</span></p>
+                        <p><strong>Tytuł:</strong> Bilet: <span id="transferTitle">...</span>, M: <span
+                                id="transferSeat">...</span></p>
                     </div>
 
-                    <div class="form_row">
-                        <label for="name">Imie:*</label>
-                        <input type="text" id="name" name="name" required><br><br>
+                    <div id="blikData" class="payment-details-box hidden">
+                        <p><strong>Kwota do pobrania:</strong> <span class="dynamic-price">...</span></p>
+                        <label for="blikCode">Wpisz kod BLIK:</label>
+                        <input type="text" id="blikCode" name="blik_code" pattern="[0-9]{6}" maxlength="6"
+                            placeholder="123456" style="width: 150px; letter-spacing: 2px; text-align: center;">
                     </div>
-                    <div class="form_row">
-                        <label for="last_name">Nazwisko:*</label>
-                        <input type="text" id="last_name" name="last_name" required><br><br>
-                    </div>
-                    <div class="form_row">
-                        <label for="email">Adres e-mail:*</label>
-                        <input type="email" id="email" name="email" required><br><br>
-                    </div>
-                    <div class="form_row">
-                        <label for="tel_num">Numer telefonu:</label>
-                        <input type="tel" id="tel_num" name="tel_num" pattern="[0-9]{9}"><br><br>
-                    </div>
-                    <hr class="linia">
-                    <div class="form_row">
-                        <h3>Płatność*</h3>
-                    </div>
-                    
-                    <div class="form_row">
-                        <label class="payment-option">
-                            <input type="radio" name="payment" value="Przelew" checked>
-                            Przelew Tradycjny
+                </div>
+
+                <hr style="margin: 20px 0; border:0; border-top:1px solid #eee;">
+
+                <div class="form_row zgody-box">
+                    <h3>Zgody:</h3>
+                    <div style="margin-bottom: 10px;">
+                        <label>
+                            <input type="checkbox" name="regulamin" value="Tak" required
+                                oninvalid="this.setCustomValidity('Musisz zaakceptować regulamin, aby kontynuować')"
+                                oninput="this.setCustomValidity('')">
+                            Oświadczam, że zapoznałem(-am) się z regulaminem sprzedaży biletów oraz akceptuję jego
+                            treść.*
                         </label>
-
-                        <label class="payment-option">
-                            <input type="radio" name="payment" value="blik">
-                            Blik
+                    </div>
+                    <div>
+                        <label>
+                            <input type="checkbox" name="Rodo" value="Tak" required
+                                oninvalid="this.setCustomValidity('Wymagana jest zgoda na przetwarzanie danych')"
+                                oninput="this.setCustomValidity('')">
+                            Wyrażam zgodę na przetwarzanie moich danych osobowych (RODO) w celu realizacji zamówienia.*
                         </label>
-
-                        <div id="transferData" class="paymen_details hidden">
-                            <p><strong>Odbiorca:</strong> Ticker Hero</p>
-                            <p><strong>Numer konta:</strong> 12 3456 7890 1234 5678 9012 3456</p>
-                            <p><strong>Kwota:</strong> 130.00 PLN</p>
-                            <p><strong>Tytuł przelewu:</strong> Zakup biletu: koncert (tytuł koncertu) i numer biletu (któy pokarze się na następnej stronie)</p>
-                        </div>
-
-                        <div id="blikData" class="paymen_details hidden">
-                            <p><strong>Kwota:</strong> 130.00 PLN</p>
-                            <label>Kod BLIK</label><br>
-                            <input type="text" id="blikCode" name="blik_code"
-                                pattern="[0-9]{6}" maxlength="6">
-                        </div>
                     </div>
-                    <hr class="linia">
-                    <div class="form_row">
-                        <div class="Zgody">
-                            <div>
-                                <h3>Zgody:</h3>
-                            </div>
-                            <div class="Zgody_che">
-                                <label><input type="checkbox" name="regulamin" value="Tak" required>
-                                    Oświadczam, że zapoznałem(-am) się z regulaminem sprzedaży biletów oraz akceptuję jego treść. *
-                                </label><br><br>
+                </div>
 
-                            <div class="Zgody_che">
-                                <label><input type="checkbox" name="Rodo" value="Tak" required> 
-                                    Wyrażam zgodę na przetwarzanie moich danych osobowych w celu realizacji
-                                    zamówienia, zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (UE)
-                                    2016/679 (RODO). *
-                                </label><br><br>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="button_buy" type="submit">
-                        Kupuję bilet
-                    </button>
-                <p>*Pola oznaczone gwiazdką są obowiązkowe</p>
+                <button class="btn btn-success" type="submit" style="width: 100%; font-size: 1.2em; margin-top: 10px;">
+                    Kupuję i płacę &rarr;
+                </button>
+                <p style="font-size: 0.8em; color: #666; margin-top: 10px; text-align: center;">*Pola oznaczone gwiazdką
+                    są obowiązkowe</p>
             </form>
-    </div>
         </section>
     </main>
 
-</body>
+    <script src="auth.js"></script>
+    <script>
+        // 1. Sprawdź użytkownika
+        const currentUser = getCurrentUser();
 
-<script>
-    const qs = new URLSearchParams(window.location.search);
-    const id = qs.get("id");
-    const sektor = qs.get("sektor");
-    const miejsce = qs.get("miejsce");
-
-    const backToSeats = document.getElementById("backToSeats");
-    const form = document.getElementById("paymentForm");
-
-    const paySummaryId = document.getElementById("paySummaryId");
-    const paySummarySector = document.getElementById("paySummarySector");
-    const paySummarySeat = document.getElementById("paySummarySeat");
-    const missingCtx = document.getElementById("missingPaymentContext");
-
-    if (paySummaryId) paySummaryId.textContent = id || "—";
-    if (paySummarySector) paySummarySector.textContent = sektor || "—";
-    if (paySummarySeat) paySummarySeat.textContent = miejsce || "—";
-
-    if (backToSeats) {
-        const backQs = new URLSearchParams();
-        if (id) backQs.set("id", id);
-        if (sektor) backQs.set("sektor", sektor);
-        if (miejsce) backQs.set("miejsce", miejsce);
-        backToSeats.href = "wybor_miejsca.html" + (backQs.toString() ? ("?" + backQs.toString()) : "");
-    }
-
-    if (form) {
-        const nextQs = new URLSearchParams();
-        if (id) nextQs.set("id", id);
-        if (sektor) nextQs.set("sektor", sektor);
-        if (miejsce) nextQs.set("miejsce", miejsce);
-        form.action = "potwierdzenie.html" + (nextQs.toString() ? ("?" + nextQs.toString()) : "");
-    }
-
-    if ((!id || !sektor || !miejsce) && missingCtx) {
-        missingCtx.style.display = "block";
-    }
-
-    const paymentRadios = document.querySelectorAll('input[name="payment"]');
-    const transferData = document.getElementById('transferData');
-    const blikData = document.getElementById('blikData');
-    const blikInput = document.getElementById('blikCode');
-
-    function applyPaymentView() {
-        const chosen = document.querySelector('input[name="payment"]:checked')?.value;
-
-        if (chosen === 'Przelew') {
-            transferData?.classList.remove('hidden');
-            blikData?.classList.add('hidden');
-            if (blikInput) blikInput.required = false;
-        } else if (chosen === 'blik') {
-            blikData?.classList.remove('hidden');
-            transferData?.classList.add('hidden');
-            if (blikInput) blikInput.required = true;
+        if (currentUser) {
+            document.getElementById('accountDataRow').style.display = 'block';
+            document.getElementById('accountLabelText').textContent =
+                `Użyj danych z konta (${currentUser.firstName} ${currentUser.lastName})`;
         }
-    }
 
-    paymentRadios.forEach(r => r.addEventListener('change', applyPaymentView));
-    applyPaymentView();
-</script>
+        const fillCheckbox = document.getElementById("fillFromAccount");
+        const nameInput = document.getElementById("name");
+        const lastNameInput = document.getElementById("last_name");
+        const emailInput = document.getElementById("email");
+        const phoneInput = document.getElementById("tel_num");
+
+        fillCheckbox.addEventListener("change", function () {
+            if (this.checked && currentUser) {
+                nameInput.value = currentUser.firstName;
+                lastNameInput.value = currentUser.lastName;
+                emailInput.value = currentUser.email;
+                phoneInput.value = currentUser.phone || "";
+
+                // Resetujemy komunikaty błędów po wstawieniu poprawnych danych
+                nameInput.setCustomValidity('');
+                lastNameInput.setCustomValidity('');
+                emailInput.setCustomValidity('');
+                phoneInput.setCustomValidity('');
+            } else {
+                nameInput.value = "";
+                lastNameInput.value = "";
+                emailInput.value = "";
+                phoneInput.value = "";
+            }
+        });
+
+        const concertsData = {
+            1: { title: "Freddie Mercury Rock-Operowo" },
+            2: { title: "Michał Wiśniewski Akustycznie" },
+            3: { title: "Piotr Rubik" },
+            4: { title: "Maryla Rodowicz" }
+        };
+
+        const qs = new URLSearchParams(window.location.search);
+        const id = qs.get("id");
+        const sektor = qs.get("sektor");
+        const miejsce = qs.get("miejsce");
+        const cena = qs.get("cena");
+        const concert = concertsData[id];
+
+        if (concert) {
+            document.getElementById("paySummaryTitle").textContent = concert.title;
+            const tt = document.getElementById("transferTitle");
+            if (tt) tt.textContent = concert.title;
+        }
+        document.getElementById("paySummarySector").textContent = sektor || "—";
+        const seats = [document.getElementById("paySummarySeat"), document.getElementById("transferSeat")];
+        seats.forEach(el => { if (el) el.textContent = miejsce || "—"; });
+
+        const formattedPrice = cena ? (cena + " PLN") : "—";
+        document.querySelectorAll(".dynamic-price, #paySummaryPrice").forEach(el => el.textContent = formattedPrice);
+
+        const backBtn = document.getElementById("backToSeats");
+        if (backBtn) {
+            const backQs = new URLSearchParams(window.location.search);
+            backBtn.href = "wybor_miejsca.html?" + backQs.toString();
+        }
+
+        const missingCtx = document.getElementById("missingPaymentContext");
+        if ((!id || !sektor || !miejsce || !cena) && missingCtx) {
+            missingCtx.style.display = "block";
+            document.getElementById("paySummaryTitle").textContent = "Błąd danych";
+        }
+
+        const paymentRadios = document.querySelectorAll('input[name="payment"]');
+        const transferData = document.getElementById('transferData');
+        const blikData = document.getElementById('blikData');
+        const blikInput = document.getElementById('blikCode');
+
+        function applyPaymentView() {
+            const chosen = document.querySelector('input[name="payment"]:checked')?.value;
+            if (chosen === 'Przelew') {
+                transferData.classList.remove('hidden');
+                blikData.classList.add('hidden');
+                blikInput.required = false;
+            } else {
+                blikData.classList.remove('hidden');
+                transferData.classList.add('hidden');
+                blikInput.required = true;
+            }
+        }
+        paymentRadios.forEach(r => r.addEventListener('change', applyPaymentView));
+        applyPaymentView();
+
+        document.getElementById("paymentForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const nextQs = new URLSearchParams(window.location.search);
+
+            nextQs.set("name", formData.get("name"));
+            nextQs.set("last_name", formData.get("last_name"));
+            nextQs.set("email", formData.get("email"));
+
+            window.location.href = "potwierdzenie.html?" + nextQs.toString();
+        });
+    </script>
+</body>
 
 </html>

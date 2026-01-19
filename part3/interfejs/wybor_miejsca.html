@@ -3,32 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Wybór miejsca</title>
-    <style>
-        .sektor.active, .lista-miejsc button.active {
-            background-color: #1e90ff;
-            color: white;
-            border-color: #1e90ff;
-        }
-        .sektor {
-            border: 2px solid #1e90ff;
-            padding: 20px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .lista-miejsc button {
-            padding: 10px;
-            cursor: pointer;
-        }
-        .lista-miejsc button[disabled] {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-    </style>
 </head>
 
-<body class="main-page">
+<body class="checkout-page">
 
     <header>
         <h1>Wybierz miejsce</h1>
@@ -36,12 +16,22 @@
 
     <nav>
         <ul>
-            <li><a id="powrotLink">Powrót</a></li>
+            <li><a id="accountLink" href="Konto.html" style="display:none;">Konto</a></li>
+
+            <li><a href="index.html">Szukaj koncertów</a></li>
+            <li><a>Koncerty w twojej okolicy</a></li>
+
+            <li><a id="authBtn" href="login.html">Zaloguj się</a></li>
         </ul>
     </nav>
 
     <main>
-        
+        <div class="back-bar" style="margin-bottom: 20px; border-bottom: 1px solid #e0e6ef; padding-bottom: 10px;">
+            <a id="powrotLink" class="btn btn-secondary" style="font-size: 0.9em;">
+                &larr; Powrót do koncertu
+            </a>
+        </div>
+
         <ul class="stepper" aria-label="Kroki zakupu">
             <li class="active">1. Wybór miejsca</li>
             <li>2. Płatność</li>
@@ -57,191 +47,247 @@
 
         <div class="summary-box" aria-live="polite">
             <strong>Twój wybór:</strong>
-            <div>Koncert ID: <span id="summaryId">—</span></div>
-            <div>Sektor: <span id="summarySector">—</span></div>
-            <div>Miejsce: <span id="summarySeat">—</span></div>
+            <div style="margin-top:5px;">
+                <span class="tag tag-wip">Koncert: <span id="summaryTitle">Ładowanie...</span></span>
+                <span class="tag tag-wip">Sektor: <span id="summarySector">—</span></span>
+                <span class="tag tag-wip">Miejsce: <span id="summarySeat">—</span></span>
+                <span class="tag tag-wip" style="background:#e6ffe6; border-color:#88cc88;">Cena: <span
+                        id="summaryPrice">—</span></span>
+            </div>
         </div>
-<section>
-            <h2>Wybierz sektor</h2>
+
+        <section>
+            <h2 style="text-align:center; margin-bottom:20px;">Wybierz sektor</h2>
 
             <div style="
-        display:grid; 
-        grid-template-columns: repeat(3, 1fr); 
-        gap:15px; 
-        max-width:500px;
-        margin:auto;
-        text-align:center;">
+                display:grid; 
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+                gap:15px; 
+                max-width:600px;
+                margin:auto;
+                text-align:center;">
 
                 <div id="sektor-A" class="sektor" onclick="pokazMiejsca('A')">
                     <h3>Sektor A</h3>
-                    <p>Najbliżej sceny</p>
-                    <p>Cena:<br> powyżej 200 PLN</p>
+                    <p style="font-size:0.9em;">Najbliżej sceny</p>
+                    <p style="font-weight:bold; color:#1e90ff;">
+                        <span id="price-A">...</span> PLN
+                    </p>
                 </div>
 
                 <div id="sektor-B" class="sektor" onclick="pokazMiejsca('B')">
                     <h3>Sektor B</h3>
-                    <p>Miejsca centralne</p>
-                    <p>Cena:<br> Pomiędzy 130 PLN, a 200 PLN</p>
+                    <p style="font-size:0.9em;">Miejsca centralne</p>
+                    <p style="font-weight:bold; color:#1e90ff;">
+                        <span id="price-B">...</span> PLN
+                    </p>
                 </div>
 
                 <div id="sektor-C" class="sektor" onclick="pokazMiejsca('C')">
                     <h3>Sektor C</h3>
-                    <p>Najtańsze miejsca</p>
-                    <p>Cena:<br> do 130 PLN</p>
+                    <p style="font-size:0.9em;">Najtańsze miejsca</p>
+                    <p style="font-weight:bold; color:#1e90ff;">
+                        <span id="price-C">...</span> PLN
+                    </p>
                 </div>
 
             </div>
 
-            <hr style="margin:30px 0;">
+            <hr style="margin:30px 0; border:0; border-top:1px solid #eee;">
 
-            <div id="miejsca-A" class="lista-miejsc" style="display:none;">
-                <h2>Miejsca – Sektor A</h2>
-                <div style="display:flex; gap:10px;">
+            <div id="miejsca-A" class="lista-miejsc" style="display:none; text-align:center;">
+                <h3>Miejsca – Sektor A</h3>
+                <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
                     <button disabled>A1 (zajęte)</button>
                     <button disabled>A2 (zajęte)</button>
                     <button disabled>A3 (zajęte)</button>
+                    <button>A4</button>
+                    <button>A5</button>
                 </div>
             </div>
 
-            <div id="miejsca-B" class="lista-miejsc" style="display:none;">
-                <h2>Miejsca – Sektor B</h2>
-                <div style="display:flex; gap:10px;">
+            <div id="miejsca-B" class="lista-miejsc" style="display:none; text-align:center;">
+                <h3>Miejsca – Sektor B</h3>
+                <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+                    <button>B1</button>
+                    <button>B2</button>
+                    <button>B3</button>
+                    <button>B4</button>
                     <button>B5</button>
                     <button disabled>B6 (zajęte)</button>
                     <button>B7</button>
                 </div>
             </div>
 
-            <div id="miejsca-C" class="lista-miejsc" style="display:none;">
-                <h2>Miejsca – Sektor C</h2>
-                <div style="display:flex; gap:10px;">
+            <div id="miejsca-C" class="lista-miejsc" style="display:none; text-align:center;">
+                <h3>Miejsca – Sektor C</h3>
+                <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
                     <button>C1</button>
                     <button>C2</button>
                     <button disabled>C3 (zajęte)</button>
+                    <button>C4</button>
+                    <button>C5</button>
                 </div>
             </div>
 
-            <br><br>
-
-            <a id="toPayment" class="btn btn-primary" href="#" aria-disabled="true">Przejdź do płatności</a>
-            <p style="margin-top:10px; opacity:0.8;">Najpierw wybierz sektor i miejsce.</p>
+            <div style="text-align:center; margin-top:40px;">
+                <a id="toPayment" class="btn btn-primary disabled" href="#" aria-disabled="true"
+                    style="font-size:1.1em; padding: 15px 30px;">
+                    Przejdź do płatności &rarr;
+                </a>
+            </div>
         </section>
-
-        <script>
-            const params = new URLSearchParams(window.location.search);
-            const id = params.get("id");
-
-            let selectedSector = params.get("sektor");
-            let selectedSeat = params.get("miejsce");
-
-            const back = document.getElementById("powrotLink");
-            const toPayment = document.getElementById("toPayment");
-
-            const summaryId = document.getElementById("summaryId");
-            const summarySector = document.getElementById("summarySector");
-            const summarySeat = document.getElementById("summarySeat");
-            const missingIdBox = document.getElementById("missingIdBox");
-
-            function updateSummary() {
-                summaryId.textContent = id || "—";
-                summarySector.textContent = selectedSector || "—";
-                summarySeat.textContent = selectedSeat || "—";
-            }
-
-            function setPaymentDisabled(disabled) {
-                if (!toPayment) return;
-                if (disabled) {
-                    toPayment.href = "#";
-                    toPayment.setAttribute("aria-disabled", "true");
-                    toPayment.classList.add("disabled");
-                } else {
-                    toPayment.setAttribute("aria-disabled", "false");
-                    toPayment.classList.remove("disabled");
-                }
-            }
-
-            function updatePaymentLink() {
-                if (!id || !selectedSector || !selectedSeat) {
-                    setPaymentDisabled(true);
-                    return;
-                }
-                const qs = new URLSearchParams({ id, sektor: selectedSector, miejsce: selectedSeat });
-                toPayment.href = "platnosc.html?" + qs.toString();
-                setPaymentDisabled(false);
-            }
-
-            function pokazMiejsca(sektor) {
-                selectedSector = sektor;
-                selectedSeat = null;
-
-                document.querySelectorAll('.lista-miejsc').forEach(div => {
-                    div.style.display = 'none';
-                });
-
-                document.querySelectorAll('.sektor').forEach(div => {
-                    div.classList.remove('active');
-                });
-
-                document.querySelectorAll('.lista-miejsc button').forEach(b => b.classList.remove('active'));
-
-                const sektorDiv = document.getElementById('sektor-' + sektor);
-                if (sektorDiv) sektorDiv.classList.add('active');
-
-                const miejsca = document.getElementById('miejsca-' + sektor);
-                if (miejsca) {
-                    miejsca.style.display = 'block';
-                    miejsca.scrollIntoView({ behavior: 'smooth' });
-                }
-
-                updateSummary();
-                updatePaymentLink();
-            }
-
-            document.querySelectorAll('.lista-miejsc button').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    if (btn.disabled) return;
-
-                    btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-
-                    btn.classList.add('active');
-                    selectedSeat = btn.textContent.trim();
-
-                    updateSummary();
-                    updatePaymentLink();
-                });
-            });
-
-            if (back) {
-                back.href = id ? ("koncert.html?id=" + id) : "index.html";
-            }
-
-            if (!id && missingIdBox) {
-                missingIdBox.style.display = "block";
-            }
-
-            updateSummary();
-
-            if (selectedSector) {
-                pokazMiejsca(selectedSector);
-
-                if (selectedSeat) {
-                    const list = document.getElementById("miejsca-" + selectedSector);
-                    if (list) {
-                        const seatBtn = Array.from(list.querySelectorAll("button"))
-                            .find(b => b.textContent.trim() === selectedSeat);
-                        if (seatBtn && !seatBtn.disabled) {
-                            seatBtn.classList.add("active");
-                            updatePaymentLink();
-                        }
-                    }
-                }
-            } else {
-                updatePaymentLink();
-            }
-        </script>
 
     </main>
 
+    <script>
+        // 1. DANE KONCERTÓW (Muszą być tu dostępne, żeby znać cenę bazową)
+        const concertsData = {
+            1: { title: "Freddie Mercury Rock-Operowo", price: 150 },
+            2: { title: "Michał Wiśniewski Akustycznie", price: 700 },
+            3: { title: "Piotr Rubik", price: 300 },
+            4: { title: "Maryla Rodowicz", price: 400 }
+        };
+
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+        const concert = concertsData[id]; // Pobieramy dane konkretnego koncertu
+
+        let selectedSector = params.get("sektor");
+        let selectedSeat = params.get("miejsce");
+        let currentPrice = 0; // Zmienna na ostateczną cenę
+
+        // Elementy DOM
+        const back = document.getElementById("powrotLink");
+        const toPayment = document.getElementById("toPayment");
+        const missingIdBox = document.getElementById("missingIdBox");
+
+        const summaryTitle = document.getElementById("summaryTitle");
+        const summarySector = document.getElementById("summarySector");
+        const summarySeat = document.getElementById("summarySeat");
+        const summaryPrice = document.getElementById("summaryPrice");
+
+        // Ceny sektorów (obliczymy je zaraz)
+        let prices = { A: 0, B: 0, C: 0 };
+
+        // --- INICJALIZACJA CEN ---
+        if (concert) {
+            const basePrice = concert.price;
+            summaryTitle.textContent = concert.title;
+
+            // Logika cenowa: C = base, B = base + 50, A = base + 100
+            prices.C = basePrice;
+            prices.B = basePrice + 50;
+            prices.A = basePrice + 100;
+
+            // Wyświetl ceny w kafelkach
+            document.getElementById("price-A").textContent = prices.A;
+            document.getElementById("price-B").textContent = prices.B;
+            document.getElementById("price-C").textContent = prices.C;
+        } else {
+            // Jeśli brak ID lub błędne ID
+            if (missingIdBox) missingIdBox.style.display = "block";
+            summaryTitle.textContent = "Błąd wyboru";
+        }
+
+        function updateSummary() {
+            summarySector.textContent = selectedSector || "—";
+            summarySeat.textContent = selectedSeat || "—";
+
+            // Aktualizacja ceny w podsumowaniu
+            if (selectedSector && prices[selectedSector]) {
+                currentPrice = prices[selectedSector];
+                summaryPrice.textContent = currentPrice + " PLN";
+            } else {
+                summaryPrice.textContent = "—";
+            }
+        }
+
+        function setPaymentDisabled(disabled) {
+            if (!toPayment) return;
+            if (disabled) {
+                toPayment.href = "#";
+                toPayment.setAttribute("aria-disabled", "true");
+                toPayment.classList.add("disabled");
+                toPayment.style.opacity = "0.5";
+                toPayment.style.pointerEvents = "none";
+            } else {
+                toPayment.setAttribute("aria-disabled", "false");
+                toPayment.classList.remove("disabled");
+                toPayment.style.opacity = "1";
+                toPayment.style.pointerEvents = "auto";
+            }
+        }
+
+        function updatePaymentLink() {
+            if (!id || !selectedSector || !selectedSeat) {
+                setPaymentDisabled(true);
+                return;
+            }
+            // Przekazujemy dalej ID, sektor, miejsce ORAZ obliczoną cenę
+            const qs = new URLSearchParams({
+                id,
+                sektor: selectedSector,
+                miejsce: selectedSeat,
+                cena: currentPrice
+            });
+            toPayment.href = "platnosc.html?" + qs.toString();
+            setPaymentDisabled(false);
+        }
+
+        function pokazMiejsca(sektor) {
+            selectedSector = sektor;
+            selectedSeat = null;
+
+            // UI
+            document.querySelectorAll('.lista-miejsc').forEach(div => div.style.display = 'none');
+            document.querySelectorAll('.sektor').forEach(div => div.classList.remove('active'));
+            document.querySelectorAll('.lista-miejsc button').forEach(b => b.classList.remove('active'));
+
+            const sektorDiv = document.getElementById('sektor-' + sektor);
+            if (sektorDiv) sektorDiv.classList.add('active');
+
+            const miejsca = document.getElementById('miejsca-' + sektor);
+            if (miejsca) miejsca.style.display = 'block';
+
+            updateSummary();
+            updatePaymentLink();
+        }
+
+        // Obsługa przycisków
+        document.querySelectorAll('.lista-miejsc button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.disabled) return;
+                btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedSeat = btn.textContent.trim();
+                updateSummary();
+                updatePaymentLink();
+            });
+        });
+
+        if (back) back.href = id ? ("koncert.html?id=" + id) : "index.html";
+
+        // Jeśli parametry w URL (np. odświeżenie)
+        if (selectedSector) {
+            pokazMiejsca(selectedSector);
+            if (selectedSeat) {
+                const list = document.getElementById("miejsca-" + selectedSector);
+                if (list) {
+                    const seatBtn = Array.from(list.querySelectorAll("button"))
+                        .find(b => b.textContent.trim() === selectedSeat);
+                    if (seatBtn && !seatBtn.disabled) {
+                        seatBtn.classList.add("active");
+                        updatePaymentLink();
+                    }
+                }
+            }
+        }
+
+        // Pierwsze uruchomienie podsumowania
+        updateSummary();
+    </script>
+    <script src="auth.js"></script>
 </body>
 
 </html>

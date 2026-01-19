@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logowanie – TicketHero</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="login-page">
+    <header>
+        <h1>Zaloguj się</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Szukaj koncertów</a></li>
+            <li><a>Koncerty w twojej okolicy</a></li>
+            <li><a href="rejestracja.html">Załóż konto</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="login-container">
+
+            <div id="login-success" class="info info-success"
+                style="display: none; margin-bottom: 20px; text-align: center;">
+                Rejestracja przebiegła pomyślnie!<br>Możesz się teraz zalogować.
+            </div>
+
+            <form id="login-form">
+                <div class="form_row">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="jan@example.com" required
+                        oninvalid="this.setCustomValidity('Proszę podać poprawny adres e-mail (np. jan@example.com)')"
+                        oninput="this.setCustomValidity('')">
+                </div>
+
+                <div class="form_row">
+                    <label for="password">Hasło</label>
+                    <input type="password" id="password" name="password" placeholder="********" required
+                        oninvalid="this.setCustomValidity('Proszę podać hasło')" oninput="this.setCustomValidity('')">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                    Zaloguj się
+                </button>
+
+                <p style="text-align: center; margin-top: 15px;">
+                    Nie masz konta? <a href="rejestracja.html">Zarejestruj się</a>
+                </p>
+
+                <div id="login-error" class="info info-error" style="display: none; margin-top: 10px;"></div>
+            </form>
+        </div>
+    </main>
+
+    <script src="auth.js"></script>
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const errorDiv = document.getElementById('login-error');
+        const successDiv = document.getElementById('login-success');
+
+        // Sprawdzanie parametru URL po rejestracji
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('registered') === 'true') {
+            successDiv.style.display = 'block';
+        }
+
+        loginForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            successDiv.style.display = 'none'; // Ukryj sukces przy próbie logowania
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const success = loginUser(email, password);
+
+            if (success) {
+                window.location.href = 'Konto.html';
+            } else {
+                errorDiv.textContent = "Błędny adres e-mail lub hasło.";
+                errorDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+
+</html>

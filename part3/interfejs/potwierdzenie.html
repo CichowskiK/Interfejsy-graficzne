@@ -3,62 +3,163 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Potwierdzenie</title>
+    <title>Potwierdzenie zakupu</title>
 </head>
 
-<body class="main-page">
+<body class="checkout-page">
 
     <header>
         <h1>Zakup udany!</h1>
     </header>
 
+    <nav>
+        <ul>
+            <li><a id="accountLink" href="Konto.html" style="display:none;">Konto</a></li>
+            <li><a href="index.html">Szukaj koncertów</a></li>
+            <li><a>Koncerty w twojej okolicy</a></li>
+            <li><a id="authBtn" href="login.html">Zaloguj się</a></li>
+        </ul>
+    </nav>
+
     <main>
-        
+
         <ul class="stepper" aria-label="Kroki zakupu">
             <li>1. Wybór miejsca</li>
             <li>2. Płatność</li>
             <li class="active">3. Potwierdzenie</li>
         </ul>
 
-        <div class="summary-box" aria-live="polite">
-            <strong>Szczegóły zakupu:</strong>
-            <div>Koncert ID: <span id="confirmId">—</span></div>
-            <div>Sektor: <span id="confirmSector">—</span></div>
-            <div>Miejsce: <span id="confirmSeat">—</span></div>
-        </div>
-<section>
-            <p>Dziękujemy za zakup biletu.</p>
-            <p>Numer biletu: #FMR-001234</p>
+        <section style="text-align: center;">
+            <span class="success-icon">&#10004;</span>
 
-            <button id="downloadTicket" class="btn btn-secondary" type="button">Pobierz bilet</button>
-
-            <a class="btn btn-success" href="index.html">Wróć do strony głównej</a>
-            <div style="margin-top:12px;">
-                <a id="backToConcert" class="btn btn-primary" href="index.html">Wróć do szczegółów koncertu</a>
+            <div style="margin-bottom: 20px;">
+                <h2 style="margin-bottom: 10px;">Dziękujemy za zakup, <span id="userName">...</span>!</h2>
+                <p style="margin: 0 auto;">Bilet został wysłany na adres: <strong id="userEmail">...</strong></p>
+                <p id="historySavedMsg"
+                    style="color: #28a745; font-size: 0.9em; margin: 5px auto; display: none; text-align: center;">
+                    Bilet został zapisany w Twojej historii zamówień.
+                </p>
             </div>
+
+            <div class="ticket-card">
+                <div class="ticket-header" id="ticketTitle">Ładowanie koncertu...</div>
+
+                <div class="ticket-row">
+                    <span class="ticket-label">Data:</span>
+                    <span class="ticket-value" id="ticketDate">...</span>
+                </div>
+                <div class="ticket-row">
+                    <span class="ticket-label">Miejsce:</span>
+                    <span class="ticket-value" id="ticketPlace">...</span>
+                </div>
+                <div class="ticket-row">
+                    <span class="ticket-label">Sektor:</span>
+                    <span class="ticket-value" id="ticketSector">—</span>
+                </div>
+                <div class="ticket-row">
+                    <span class="ticket-label">Miejsce:</span>
+                    <span class="ticket-value" id="ticketSeat">—</span>
+                </div>
+                <div class="ticket-row">
+                    <span class="ticket-label">Cena:</span>
+                    <span class="ticket-value" id="ticketPrice">—</span>
+                </div>
+
+                <hr style="border: 0; border-top: 2px dashed #ddd; margin: 15px 0;">
+
+                <div class="ticket-row">
+                    <span class="ticket-label">Numer biletu:</span>
+                    <span class="ticket-value" id="ticketNumber"
+                        style="font-family: monospace; letter-spacing: 1px;">GENEROWANIE...</span>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button id="downloadTicket" class="btn btn-primary" type="button">
+                    &#128424; Drukuj / Pobierz PDF
+                </button>
+                <a class="btn btn-success" href="index.html">Wróć do strony głównej</a>
+            </div>
+
         </section>
     </main>
 
+    <script src="auth.js"></script>
     <script>
+        // 1. DANE KONCERTÓW
+        const concertsData = {
+            1: { title: "Freddie Mercury Rock-Operowo", date: "21.11.2026", place: "Tauron Arena Kraków" },
+            2: { title: "Michał Wiśniewski Akustycznie", date: "11.02.2026", place: "Klub Stodoła Warszawa" },
+            3: { title: "Piotr Rubik", date: "03.03.2026", place: "Filharmonia Szczecin" },
+            4: { title: "Maryla Rodowicz", date: "21.07.2026", place: "Tauron Arena Kraków" }
+        };
+
+        // 2. POBIERANIE PARAMETRÓW
         const qs = new URLSearchParams(window.location.search);
+
         const id = qs.get("id");
         const sektor = qs.get("sektor");
         const miejsce = qs.get("miejsce");
+        const cena = qs.get("cena");
+        const name = qs.get("name");
+        const email = qs.get("email");
 
-        document.getElementById("confirmId").textContent = id || "—";
-        document.getElementById("confirmSector").textContent = sektor || "—";
-        document.getElementById("confirmSeat").textContent = miejsce || "—";
+        const concert = concertsData[id];
 
-        const backToConcert = document.getElementById("backToConcert");
-        if (backToConcert && id) {
-            backToConcert.href = "koncert.html?id=" + id;
+        // 3. WYPEŁNIANIE DANYCH
+        document.getElementById("userName").textContent = name || "Kliencie";
+        document.getElementById("userEmail").textContent = email || "twój e-mail";
+
+        if (concert) {
+            document.getElementById("ticketTitle").textContent = concert.title;
+            document.getElementById("ticketDate").textContent = concert.date;
+            document.getElementById("ticketPlace").textContent = concert.place;
+        } else {
+            document.getElementById("ticketTitle").textContent = "Bilet na koncert (ID: " + (id || "?") + ")";
         }
 
+        document.getElementById("ticketSector").textContent = sektor || "—";
+        document.getElementById("ticketSeat").textContent = miejsce || "—";
+        document.getElementById("ticketPrice").textContent = cena ? (cena + " PLN") : "—";
+
+        // 4. GENEROWANIE NUMERU BILETU
+        const randomNum = Math.floor(100000 + Math.random() * 900000);
+        const ticketId = `#TICKET-${id}-${randomNum}`;
+        document.getElementById("ticketNumber").textContent = ticketId;
+
+        // --- 5. ZAPIS DO HISTORII (NOWOŚĆ) ---
+        // Sprawdzamy czy użytkownik jest zalogowany (funkcja z auth.js)
+        const currentUser = getCurrentUser();
+
+        if (currentUser) {
+            // Przygotowujemy obiekt z danymi do zapisu
+            const orderToSave = {
+                title: concert ? concert.title : "Nieznany koncert",
+                date: concert ? concert.date : "Brak daty",
+                place: concert ? concert.place : "Brak miejsca",
+                sector: sektor,
+                seat: miejsce,
+                price: cena,
+                ticketId: ticketId, // Zapisujemy ten sam numer, który wyświetlamy
+                purchaseDate: new Date().toLocaleDateString()
+            };
+
+            // Wywołujemy funkcję z auth.js (którą dodałeś w poprzednim kroku)
+            // Używamy setTimeout, żeby mieć pewność że wszystko się załadowało
+            setTimeout(() => {
+                addOrderToHistory(orderToSave);
+                // Pokazujemy komunikat
+                document.getElementById('historySavedMsg').style.display = 'block';
+            }, 500);
+        }
+
+        // 6. OBSŁUGA DRUKOWANIA
         const downloadBtn = document.getElementById("downloadTicket");
         if (downloadBtn) {
             downloadBtn.addEventListener("click", () => {
-                alert("Pobieranie biletu jest jeszcze w trakcie tworzenia (WIP).");
+                window.print();
             });
         }
     </script>

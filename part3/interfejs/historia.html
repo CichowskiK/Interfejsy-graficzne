@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Historia Zamówień – TicketHero</title>
+</head>
+
+<body class="account-page">
+
+    <header>
+        <h1>Historia Koncertów</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a id="accountLink" href="Konto.html">Konto</a></li>
+            <li><a href="index.html">Szukaj koncertów</a></li>
+            <li><a>Koncerty w twojej okolicy</a></li>
+            <li><a id="authBtn" href="login.html">Zaloguj się</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="back-bar">
+            <a href="Konto.html" class="btn btn-secondary">&larr; Wróć do profilu</a>
+        </div>
+
+        <section class="history-container">
+            <div id="ordersList">
+                <p style="text-align:center;">Ładowanie historii...</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="auth.js"></script>
+    <script>
+        // 1. Sprawdzenie autoryzacji
+        requireAuth();
+        const user = getCurrentUser();
+
+        // 2. Pobranie kontenera
+        const listContainer = document.getElementById('ordersList');
+
+        // 3. Funkcja renderująca historię
+        function renderHistory() {
+            // Sprawdzamy czy użytkownik ma jakieś zamówienia
+            // (user.orders może być undefined, jeśli to nowe konto)
+            if (user.orders && user.orders.length > 0) {
+
+                listContainer.innerHTML = ''; // Czyścimy "Ładowanie..."
+
+                // Odwracamy tablicę (.reverse()), żeby najnowsze były na górze
+                // Kopiujemy tablicę [...orders] żeby nie psuć oryginału
+                const sortedOrders = [...user.orders].reverse();
+
+                sortedOrders.forEach(order => {
+                    const card = document.createElement('div');
+                    card.className = 'history-card';
+
+                    card.innerHTML = `
+                        <div class="history-header">
+                            <span class="history-date">Zakupiono: ${order.purchaseDate || order.date}</span>
+                            <span>${order.ticketId || '#ID-???'}</span>
+                        </div>
+                        <div class="history-body">
+                            <h3 class="history-title">${order.title}</h3>
+                            
+                            <div class="history-details">
+                                <div><strong>Data wydarzenia:</strong><br> ${order.date}</div>
+                                <div><strong>Miejsce:</strong><br> ${order.place}</div>
+                                <div><strong>Sektor:</strong><br> ${order.sector || '-'}</div>
+                                <div><strong>Miejsce:</strong><br> ${order.seat || '-'}</div>
+                            </div>
+
+                            <div class="history-price">
+                                Cena: ${order.price ? order.price + ' PLN' : '0 PLN'}
+                            </div>
+                        </div>
+                    `;
+                    listContainer.appendChild(card);
+                });
+
+            } else {
+                // Jeśli brak zamówień - wyświetlamy "Stan pusty"
+                listContainer.innerHTML = `
+                    <div class="empty-state">
+                        <span class="empty-icon">&#127903;</span>
+                        <h3>Nie masz jeszcze żadnych biletów</h3>
+                        <p>Kup bilet na swój pierwszy koncert i wróć tutaj!</p>
+                        <a href="index.html" class="btn btn-primary" style="margin-top:15px;">Znajdź koncert</a>
+                    </div>
+                `;
+            }
+        }
+
+        // Uruchomienie
+        renderHistory();
+    </script>
+</body>
+
+</html>
