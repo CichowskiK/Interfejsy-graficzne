@@ -161,3 +161,86 @@ function addOrderToHistory(orderData) {
         localStorage.setItem(DB_SESSION_KEY, JSON.stringify(currentUser));
     }
 }
+
+// --- ZMIANA HASŁA ---
+function changeUserPassword(oldPassword, newPassword) {
+    const currentUser = getCurrentUser();
+    if (!currentUser) return { success: false, message: "Nie jesteś zalogowany." };
+
+    let users = JSON.parse(localStorage.getItem(DB_USERS_KEY)) || [];
+    const index = users.findIndex(u => u.email === currentUser.email);
+
+    if (index !== -1) {
+        // 1. Sprawdź czy stare hasło się zgadza
+        if (users[index].password !== oldPassword) {
+            return { success: false, message: "Stare hasło jest nieprawidłowe." };
+        }
+
+        // 2. Zapisz nowe hasło
+        users[index].password = newPassword;
+        localStorage.setItem(DB_USERS_KEY, JSON.stringify(users));
+
+        // 3. Zaktualizuj sesję (opcjonalne, ale dobra praktyka)
+        currentUser.password = newPassword;
+        localStorage.setItem(DB_SESSION_KEY, JSON.stringify(currentUser));
+
+        return { success: true, message: "Hasło zostało zmienione." };
+    }
+    return { success: false, message: "Błąd użytkownika." };
+}
+
+// --- ULUBIENI ARTYŚCI ---
+
+function addFavoriteArtist(artistName) {
+    const currentUser = getCurrentUser();
+    if (!currentUser) return false;
+
+    let users = JSON.parse(localStorage.getItem(DB_USERS_KEY)) || [];
+    const index = users.findIndex(u => u.email === currentUser.email);
+
+    if (index !== -1) {
+        // Inicjalizacja tablicy jeśli nie istnieje
+        if (!users[index].favoriteArtists) {
+            users[index].favoriteArtists = [];
+        }
+
+        // Sprawdź duplikaty (bez względu na wielkość liter)
+        const exists = users[index].favoriteArtists.some(
+            a => a.toLowerCase() === artistName.toLowerCase()
+        );
+
+        if (!exists) {
+            users[index].favoriteArtists.push(artistName);
+
+            // Zapisz w bazie i sesji
+            localStorage.setItem(DB_USERS_KEY, JSON.stringify(users));
+            currentUser.favoriteArtists = users[index].favoriteArtists;
+            localStorage.setItem(DB_SESSION_KEY, JSON.stringify(currentUser));
+            return true;
+        }
+    }
+    return false;
+}
+
+function removeFavoriteArtist(artistName) {
+    const currentUser = getCurrentUser();
+    if (!currentUser) return;
+
+    let users = JSON.parse(localStorage.getItem(DB_USERS_KEY)) || [];
+    const index = users.findIndex(u => u.email === currentUser.email);
+
+    if (index !== -1 && users[index].favoriteArtists) {
+        users[index].favoriteArtists = users[index].favoriteArtists.filter(
+            a => a !== artistName
+        );
+
+        localStorage.setItem(DB_USERS_KEY, JSON.stringify(users));
+        currentUser.favoriteArtists = users[index].favoriteArtists;
+        localStorage.setItem(DB_SESSION_KEY, JSON.stringify(currentUser));
+    }
+}
+
+function getFavoriteArtists() {
+    const currentUser = getCurrentUser();
+    return currentUser && currentUser.favoriteArtists ? currentUser.favoriteArtists : [];
+}

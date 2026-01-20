@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ulubieni Artyści – TicketHero</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="account-page">
+    <header>
+        <h1>Ulubieni Artyści</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="Konto.html">Konto</a></li>
+            <li><a href="index.html">Szukaj koncertów</a></li>
+            <li><a id="authBtn" href="login.html">Zaloguj się</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="back-bar">
+            <a href="Konto.html" class="btn btn-secondary">&larr; Wróć do profilu</a>
+        </div>
+
+        <div class="info">
+            Zacznij wpisywać nazwę, a my podpowiemy artystów z naszej bazy.
+        </div>
+
+        <section style="background:white; padding:20px; border-radius:8px; border:1px solid #e0e6ef;">
+            <h3>Twoja lista:</h3>
+
+            <form id="addArtistForm" class="favorites-input-container">
+                <div class="autocomplete-wrapper">
+                    <input type="text" id="artistInput" placeholder="Zacznij pisać (np. Mich...)" required
+                        autocomplete="off" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px;">
+                    <div id="suggestionsList" class="suggestions-list"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Dodaj</button>
+            </form>
+
+            <div id="tagsContainer" class="tags-cloud"></div>
+        </section>
+
+        <h3 style="margin-top: 30px; margin-bottom: 15px;">Nadchodzące wydarzenia dla Ciebie:</h3>
+        <div id="personalizedFeed"></div>
+
+    </main>
+
+    <script src="auth.js"></script>
+    <script>
+        requireAuth();
+
+        // --- BAZA KONCERTÓW ---
+        const concertsDB = [
+            {
+                id: 1,
+                artist: "Freddie Mercury (Rock-Opera)",
+                title: "Freddie Mercury Rock-Operowo",
+                date: "21.11.2026",
+                city: "Łódź",
+                img: "https://www.ebilet.pl/media/cms/media/xrhpj4s5/freddie-mercury-opera-show-552x736-px-e2f617db-f1c6-4e8d-a457-635fc1b031af.webp",
+                desc: "Niezwykłe spojrzenie na utwory Queen."
+            },
+            {
+                id: 2,
+                artist: "Michał Wiśniewski",
+                title: "Michał Wiśniewski Akustycznie",
+                date: "11.02.2026",
+                city: "Kraków",
+                img: "https://www.ebilet.pl/media/cms/media/msundxlx/552x736-572dbcc9-1658-6521-e1a4-683e025dca76-86ed122f-6ff1-4558-bf24-dde28dfe1922.webp",
+                desc: "Akustyczne aranżacje największych przebojów."
+            },
+            {
+                id: 3,
+                artist: "Piotr Rubik",
+                title: "Piotr Rubik „Świat się nie kończy...”",
+                date: "03.03.2026",
+                city: "Poznań",
+                img: "https://www.ebilet.pl/media/cms/media/2gqbfdqf/rubik_swiat_656x369-1-6b92428f-6a83-446c-949f-4b3c0f134fd5.webp",
+                desc: "Pełne energii i emocji kompozycje Piotra Rubika."
+            },
+            {
+                id: 4,
+                artist: "Maryla Rodowicz",
+                title: "Maryla Rodowicz – Największe Przeboje",
+                date: "21.07.2026",
+                city: "Warszawa",
+                img: "https://biletyna.pl/file/get/id/173202",
+                desc: "Królowa polskiej estrady w Warszawie."
+            },
+            {
+                id: 5,
+                artist: "Michał Bajor",
+                title: "Michał Bajor - Kolor Cafe",
+                date: "15.05.2026",
+                city: "Gdańsk",
+                img: "https://placehold.co/150x200?text=Brak+foto",
+                desc: "Piosenki włoskie i francuskie."
+            }
+        ];
+
+        // Lista unikalnych artystów do walidacji
+        const availableArtists = [...new Set(concertsDB.map(c => c.artist))];
+
+        const artistInput = document.getElementById('artistInput');
+        const suggestionsList = document.getElementById('suggestionsList');
+        const tagsContainer = document.getElementById('tagsContainer');
+        const feedContainer = document.getElementById('personalizedFeed');
+        const form = document.getElementById('addArtistForm');
+
+        // --- 1. OBSŁUGA PODPOWIEDZI (AUTOCOMPLETE) ---
+
+        artistInput.addEventListener('input', function () {
+            // Czyścimy błąd walidacji, gdy użytkownik zaczyna pisać
+            this.setCustomValidity('');
+
+            const val = this.value.toLowerCase();
+            suggestionsList.innerHTML = '';
+
+            if (!val) {
+                suggestionsList.style.display = 'none';
+                return;
+            }
+
+            const matches = availableArtists.filter(artist =>
+                artist.toLowerCase().includes(val)
+            );
+
+            if (matches.length > 0) {
+                matches.forEach(artist => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    const regex = new RegExp(`(${val})`, 'gi');
+                    div.innerHTML = artist.replace(regex, '<strong>$1</strong>');
+
+                    div.addEventListener('click', () => {
+                        // Wybór z listy jest zawsze poprawny
+                        artistInput.value = artist;
+                        suggestionsList.style.display = 'none';
+                        addArtistAndRender(artist);
+                    });
+
+                    suggestionsList.appendChild(div);
+                });
+                suggestionsList.style.display = 'block';
+            } else {
+                suggestionsList.style.display = 'none';
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.autocomplete-wrapper')) {
+                suggestionsList.style.display = 'none';
+            }
+        });
+
+        // --- 2. WALIDACJA PRZY WYSYŁCE (ENTER / BUTTON) ---
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const val = artistInput.value.trim();
+
+            // Sprawdzamy, czy wpisana wartość istnieje w bazie (ignorując wielkość liter)
+            // find() zwróci poprawną nazwę z bazy (np. "Michał Wiśniewski") jeśli user wpisał "michał wiśniewski"
+            const exactMatch = availableArtists.find(a => a.toLowerCase() === val.toLowerCase());
+
+            if (exactMatch) {
+                // Jeśli jest w bazie -> dodajemy poprawną wersję
+                addArtistAndRender(exactMatch);
+                suggestionsList.style.display = 'none';
+            } else {
+                // Jeśli nie ma w bazie (np. wpisano "Mic") -> BŁĄD
+                artistInput.setCustomValidity("Wybierz poprawnego artystę z podpowiedzi!");
+                artistInput.reportValidity(); // Wyświetla dymek błędu
+            }
+        });
+
+
+        // --- 3. LOGIKA RENDEROWANIA ---
+
+        function renderTags() {
+            const favs = getFavoriteArtists();
+            tagsContainer.innerHTML = '';
+
+            if (favs.length === 0) {
+                tagsContainer.innerHTML = '<span style="color:#777; font-style:italic;">Brak ulubionych artystów.</span>';
+            }
+
+            favs.forEach(artist => {
+                const tag = document.createElement('div');
+                tag.className = 'fav-tag';
+                tag.innerHTML = `${artist} <span class="remove-fav" onclick="window.removeArtistHandler('${artist}')">&times;</span>`;
+                tagsContainer.appendChild(tag);
+            });
+            renderFeed(favs);
+        }
+
+        function renderFeed(favs) {
+            feedContainer.innerHTML = '';
+            if (favs.length === 0) {
+                feedContainer.innerHTML = '<div class="info">Dodaj artystów powyżej, aby zobaczyć ich koncerty.</div>';
+                return;
+            }
+
+            const matchingConcerts = concertsDB.filter(concert => {
+                return favs.some(fav =>
+                    concert.artist.toLowerCase() === fav.toLowerCase() ||
+                    concert.title.toLowerCase().includes(fav.toLowerCase())
+                );
+            });
+
+            if (matchingConcerts.length === 0) {
+                feedContainer.innerHTML = '<div class="info info-warning">Brak nadchodzących koncertów dla Twoich ulubieńców.</div>';
+                return;
+            }
+
+            matchingConcerts.forEach(c => {
+                const card = document.createElement('section');
+                card.style.display = 'flex';
+                card.style.gap = '20px';
+                card.style.alignItems = 'start';
+                card.style.marginBottom = '20px';
+
+                const isMobile = window.innerWidth < 600;
+                const imgSrc = c.img.includes('http') ? c.img : 'https://placehold.co/150x200?text=Brak+foto';
+
+                card.innerHTML = `
+                    <img src="${imgSrc}" alt="${c.title}" style="width: ${isMobile ? '100px' : '150px'}; border-radius: 6px;">
+                    <div>
+                        <h2 style="margin-top:0; font-size: 1.3em;">${c.title}</h2>
+                        <p style="margin: 5px 0; color:#555;"><strong>${c.city}</strong> | ${c.date}</p>
+                        <p style="font-size: 0.9em;">${c.desc}</p>
+                        <a href="koncert.html?id=${c.id}" class="btn btn-primary" style="padding: 8px 15px; font-size: 0.9em;">Bilety</a>
+                    </div>
+                `;
+                feedContainer.appendChild(card);
+            });
+        }
+
+        function addArtistAndRender(name) {
+            addFavoriteArtist(name);
+            artistInput.value = '';
+            renderTags();
+        }
+
+        window.removeArtistHandler = function (name) {
+            removeFavoriteArtist(name);
+            renderTags();
+        };
+
+        renderTags();
+    </script>
+</body>
+
+</html>

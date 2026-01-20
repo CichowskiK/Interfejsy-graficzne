@@ -1085,3 +1085,244 @@ legend {
     margin-bottom: 20px;
     color: #333;
 }
+
+/* --- KALENDARZ (SZEROKI I RESPONSYWNY) --- */
+
+.calendar-container {
+    width: 100%;
+    /* Zajmij całą dostępną szerokość */
+    max-width: 100%;
+    /* Usuwamy blokadę 800px */
+    margin: 0;
+    /* Usuwamy marginesy centrujące */
+    background: #fff;
+    border: 1px solid #e0e6ef;
+    border-radius: 8px;
+    padding: 20px;
+    box-sizing: border-box;
+    /* Ważne: padding nie powiększy szerokości ponad 100% */
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar-header h2 {
+    margin: 0;
+    color: #1e90ff;
+    text-transform: capitalize;
+}
+
+/* Kontener na nagłówki dni tygodnia (Pon, Wt...) */
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    /* 7 równych kolumn */
+    gap: 5px;
+    margin-bottom: 5px;
+    width: 100%;
+    /* Pełna szerokość */
+}
+
+.calendar-day-name {
+    font-weight: bold;
+    text-align: center;
+    color: #666;
+    padding: 10px 0;
+    background-color: #f8fbff;
+    /* Lekkie tło dla nagłówków */
+    border-radius: 4px;
+}
+
+/* Główna siatka dni */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    /* 7 równych kolumn */
+    /* Zamiast sztywnego height, pozwalamy rzędom mieć minimalną wysokość */
+    grid-auto-rows: minmax(100px, 1fr);
+    gap: 5px;
+    width: 100%;
+    /* Pełna szerokość */
+}
+
+.calendar-day {
+    width: 100%;
+    height: 100%;
+    min-height: 100px;
+    /* Minimalna wysokość kratki */
+    border: 1px solid #f0f0f0;
+    border-radius: 4px;
+    padding: 5px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+}
+
+.calendar-day:hover {
+    background-color: #f0f8ff;
+    border-color: #1e90ff;
+    z-index: 1;
+    /* Żeby obramowanie najechało na sąsiadów */
+}
+
+.day-number {
+    font-weight: bold;
+    font-size: 0.9em;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.event-dot {
+    display: block;
+    width: 8px;
+    height: 8px;
+    background-color: #1e90ff;
+    border-radius: 50%;
+    margin-bottom: 2px;
+}
+
+.event-label {
+    display: block;
+    font-size: 0.75em;
+    background: #1e90ff;
+    color: white;
+    padding: 2px 4px;
+    border-radius: 3px;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.calendar-day.empty {
+    background: #fafafa;
+    border: 1px dashed #eee;
+    cursor: default;
+}
+
+.calendar-day.empty:hover {
+    background: #fafafa;
+    border-color: #eee;
+}
+
+/* Responsywność: Na telefonach zmniejszamy kratki */
+@media (max-width: 600px) {
+    .calendar-day {
+        min-height: 60px;
+        /* Mniejsze kratki na telefonie */
+    }
+
+    .event-label {
+        display: none;
+        /* Ukrywamy tekst wydarzenia, zostawiamy kropkę */
+    }
+
+    .event-dot {
+        margin: 0 auto;
+    }
+}
+
+/* --- ULUBIENI ARTYŚCI --- */
+
+.favorites-input-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    max-width: 500px;
+}
+
+.tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e6ef;
+}
+
+.fav-tag {
+    background-color: #e6f0ff;
+    color: #1e90ff;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #b8daff;
+    transition: all 0.2s;
+}
+
+.fav-tag:hover {
+    background-color: #dbeaff;
+}
+
+.remove-fav {
+    cursor: pointer;
+    background: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #1e90ff;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.remove-fav:hover {
+    background: #ff4d4d;
+    color: white;
+}
+
+/* --- AUTOUZUPEŁNIANIE (AUTOCOMPLETE) --- */
+
+.autocomplete-wrapper {
+    position: relative;
+    flex-grow: 1;
+    /* Żeby zajmowało miejsce w flexboxie obok przycisku */
+}
+
+.suggestions-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    /* Domyślnie ukryta */
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9em;
+    color: #333;
+}
+
+.suggestion-item:hover {
+    background-color: #f0f8ff;
+    color: #1e90ff;
+}
+
+.suggestion-item strong {
+    color: #1e90ff;
+}

@@ -16,16 +16,12 @@
     <nav>
         <ul>
             <li><a href="index.html">Szukaj koncertów</a></li>
-            <li><a>Koncerty w twojej okolicy</a></li>
+            <li><a href="okolica.html">Koncerty w twojej okolicy</a></li>
             <li><a id="authBtn" href="login.html">Zaloguj się</a></li>
         </ul>
     </nav>
 
     <main>
-        <div class="info">
-            <strong>Wskazówka:</strong> Funkcje oznaczone „WIP” są w trakcie tworzenia.
-        </div>
-
         <section id="dane" class="profile-card">
             <img class="profile-avatar" alt="Zdjęcie użytkownika"
                 src="https://tse3.mm.bing.net/th/id/OIP.UCM-fPGYrjFD5mteVKLJ4wHaJ8?cb=ucfimg2ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3">
@@ -46,20 +42,17 @@
                     <span class="dashboard-icon">&#127903;</span> Historia Koncertów
                 </a>
 
-                <div class="dashboard-card disabled">
-                    <span class="dashboard-icon">&#10084;</span> Ulubieni Artyści <br>
-                    <span class="tag tag-wip" style="margin-top:5px; display:inline-block;">WIP</span>
-                </div>
+                <a href="ulubieni.html" class="dashboard-card">
+                    <span class="dashboard-icon">&#10084;</span> Ulubieni Artyści
+                </a>
 
-                <div class="dashboard-card disabled">
-                    <span class="dashboard-icon">&#128197;</span> Kalendarz <br>
-                    <span class="tag tag-wip" style="margin-top:5px; display:inline-block;">WIP</span>
-                </div>
+                <a href="kalendarz.html" class="dashboard-card">
+                    <span class="dashboard-icon">&#128197;</span> Kalendarz Wydarzeń
+                </a>
 
-                <div class="dashboard-card disabled">
-                    <span class="dashboard-icon">&#9881;</span> Zmiana hasła <br>
-                    <span class="tag tag-wip" style="margin-top:5px; display:inline-block;">WIP</span>
-                </div>
+                <a href="zmien_haslo.html" class="dashboard-card">
+                    <span class="dashboard-icon">&#9881;</span> Zmiana hasła
+                </a>
             </div>
         </section>
     </main>
@@ -79,8 +72,6 @@
                 <p><strong>Status konta:</strong> Aktywne</p>
             `;
         }
-        // Nie musimy już ręcznie obsługiwać wylogowania tutaj, 
-        // bo robi to funkcja updateNavigation() w auth.js
     </script>
 </body>
 

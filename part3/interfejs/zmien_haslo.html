@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zmiana hasła – TicketHero</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="account-page">
+    <header>
+        <h1>Zmiana hasła</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="Konto.html">Konto</a></li>
+            <li><a href="index.html">Szukaj koncertów</a></li>
+            <li><a id="authBtn" href="login.html">Zaloguj się</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="back-bar">
+            <a href="Konto.html" class="btn btn-secondary">&larr; Wróć do profilu</a>
+        </div>
+
+        <div class="login-container">
+            <form id="change-password-form">
+                <div class="form_row">
+                    <label for="oldPassword">Stare hasło</label>
+                    <input type="password" id="oldPassword" required>
+                </div>
+                <div class="form_row">
+                    <label for="newPassword">Nowe hasło</label>
+                    <input type="password" id="newPassword" required minlength="6">
+                </div>
+                <div class="form_row">
+                    <label for="confirmPassword">Powtórz nowe hasło</label>
+                    <input type="password" id="confirmPassword" required minlength="6">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%">Zmień hasło</button>
+
+                <div id="msg" class="info hidden" style="margin-top:15px; text-align:center;"></div>
+            </form>
+        </div>
+    </main>
+
+    <script src="auth.js"></script>
+    <script>
+        requireAuth();
+
+        const form = document.getElementById('change-password-form');
+        const msgDiv = document.getElementById('msg');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const oldP = document.getElementById('oldPassword').value;
+            const newP = document.getElementById('newPassword').value;
+            const confP = document.getElementById('confirmPassword').value;
+
+            if (newP !== confP) {
+                msgDiv.textContent = "Nowe hasła nie są identyczne.";
+                msgDiv.className = "info info-warning";
+                msgDiv.style.display = 'block';
+                return;
+            }
+
+            const result = changeUserPassword(oldP, newP);
+
+            if (result.success) {
+                msgDiv.textContent = result.message;
+                msgDiv.className = "info info-success";
+                form.reset();
+            } else {
+                msgDiv.textContent = result.message;
+                msgDiv.className = "info info-error";
+            }
+            msgDiv.style.display = 'block';
+        });
+    </script>
+</body>
+
+</html>
