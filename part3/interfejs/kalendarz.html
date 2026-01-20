@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalendarz Wydarzeń – TicketHero</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="account-page">
+    <header>
+        <h1>Twój Kalendarz</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="Konto.html">Konto</a></li>
+            <li><a href="index.html">Szukaj koncertów</a></li>
+            <li><a id="authBtn" href="login.html">Zaloguj się</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="back-bar">
+            <a href="Konto.html" class="btn btn-secondary">&larr; Wróć do profilu</a>
+        </div>
+
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <button class="btn btn-secondary" id="prevMonth">&larr; Poprzedni</button>
+                <h2 id="monthYearDisplay">Luty 2026</h2>
+                <button class="btn btn-secondary" id="nextMonth">Następny &rarr;</button>
+            </div>
+
+            <div class="calendar-weekdays"
+                style="display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 5px;">
+                <div class="calendar-day-name">Pon</div>
+                <div class="calendar-day-name">Wt</div>
+                <div class="calendar-day-name">Śr</div>
+                <div class="calendar-day-name">Czw</div>
+                <div class="calendar-day-name">Pt</div>
+                <div class="calendar-day-name">Sob</div>
+                <div class="calendar-day-name">Ndz</div>
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid">
+            </div>
+        </div>
+
+        <div id="dayDetails" class="info" style="display:none; margin-top: 20px;">
+            <h3>Wydarzenia w dniu <span id="selectedDateText"></span>:</h3>
+            <div id="eventsList"></div>
+        </div>
+
+    </main>
+
+    <script src="auth.js"></script>
+    <script>
+        requireAuth();
+
+        const concertsDB = [
+            { id: 1, title: "Freddie Mercury Rock-Operowo", date: "21.11.2026", city: "Łódź" },
+            { id: 2, title: "Michał Wiśniewski Akustycznie", date: "11.02.2026", city: "Kraków" },
+            { id: 3, title: "Piotr Rubik", date: "03.03.2026", city: "Poznań" },
+            { id: 4, title: "Maryla Rodowicz", date: "21.07.2026", city: "Warszawa" }
+        ];
+
+        let currentYear = 2026;
+        let currentMonth = 1; // Luty
+
+        const monthNames = ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"];
+
+        const grid = document.getElementById('calendarGrid');
+        const monthYearDisplay = document.getElementById('monthYearDisplay');
+        const dayDetails = document.getElementById('dayDetails');
+        const selectedDateText = document.getElementById('selectedDateText');
+        const eventsList = document.getElementById('eventsList');
+
+        function renderCalendar(year, month) {
+            grid.innerHTML = ''; // Czyścimy grid
+
+            monthYearDisplay.textContent = `${monthNames[month]} ${year}`;
+
+            let firstDay = new Date(year, month, 1).getDay();
+            if (firstDay === 0) firstDay = 7;
+
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            let cellsCount = 0;
+
+            // 1. Puste kratki przed miesiącem
+            for (let i = 1; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'calendar-day empty';
+                grid.appendChild(emptyCell);
+                cellsCount++;
+            }
+
+            // 2. Dni miesiąca
+            for (let day = 1; day <= daysInMonth; day++) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day';
+
+                const dayNum = document.createElement('div');
+                dayNum.className = 'day-number';
+                dayNum.textContent = day;
+                cell.appendChild(dayNum);
+
+                const dayStr = day < 10 ? `0${day}` : day;
+                const monthStr = (month + 1) < 10 ? `0${month + 1}` : (month + 1);
+                const fullDate = `${dayStr}.${monthStr}.${year}`;
+
+                // Sprawdzamy koncerty w tym dniu
+                const events = concertsDB.filter(c => c.date === fullDate);
+
+                if (events.length > 0) {
+                    // Rysujemy kropki i etykiety
+                    events.forEach(ev => {
+                        const dot = document.createElement('span');
+                        dot.className = 'event-dot';
+                        cell.appendChild(dot);
+
+                        const label = document.createElement('span');
+                        label.className = 'event-label';
+                        label.textContent = ev.title;
+                        cell.appendChild(label);
+                    });
+
+                    // --- TUTAJ ZMIANA: LOGIKA KLIKNIĘCIA ---
+                    cell.title = "Kliknij, aby zobaczyć szczegóły"; // Dymek po najechaniu
+
+                    cell.addEventListener('click', () => {
+                        if (events.length === 1) {
+                            // JEŚLI JEST TYLKO 1 KONCERT -> IDŹ OD RAZU NA STRONĘ
+                            window.location.href = `koncert.html?id=${events[0].id}`;
+                        } else {
+                            // JEŚLI WIĘCEJ NIŻ 1 -> POKAŻ LISTĘ NA DOLE (żeby wybrać właściwy)
+                            showDetails(fullDate, events);
+                            // Opcjonalnie: scrollujemy do sekcji szczegółów
+                            dayDetails.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    });
+                }
+
+                grid.appendChild(cell);
+                cellsCount++;
+            }
+
+            // 3. Puste kratki po miesiącu (dopełnienie do 42)
+            while (cellsCount < 42) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'calendar-day empty';
+                grid.appendChild(emptyCell);
+                cellsCount++;
+            }
+        }
+
+        function showDetails(date, events) {
+            selectedDateText.textContent = date;
+            eventsList.innerHTML = '';
+
+            events.forEach(ev => {
+                const item = document.createElement('div');
+                item.style.marginBottom = "10px";
+                item.innerHTML = `
+                    <strong>${ev.title}</strong><br>
+                    Miasto: ${ev.city}<br>
+                    <a href="koncert.html?id=${ev.id}" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8em; margin-top:5px;">Przejdź do koncertu</a>
+                `;
+                eventsList.appendChild(item);
+            });
+            dayDetails.style.display = 'block';
+        }
+
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            currentMonth--;
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar(currentYear, currentMonth);
+            dayDetails.style.display = 'none';
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentMonth++;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            renderCalendar(currentYear, currentMonth);
+            dayDetails.style.display = 'none';
+        });
+
+        renderCalendar(currentYear, currentMonth);
+    </script>
+</body>
+
+</html>

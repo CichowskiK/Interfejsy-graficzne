@@ -18,7 +18,7 @@
         <ul>
             <li><a id="accountLink" href="Konto.html">Konto</a></li>
             <li><a href="index.html">Szukaj koncertów</a></li>
-            <li><a>Koncerty w twojej okolicy</a></li>
+            <li><a href="okolica.html">Koncerty w twojej okolicy</a></li>
             <li><a id="authBtn" href="login.html">Zaloguj się</a></li>
         </ul>
     </nav>
@@ -44,47 +44,78 @@
         // 2. Pobranie kontenera
         const listContainer = document.getElementById('ordersList');
 
+        // Funkcja pomocnicza: Zamiana daty "DD.MM.YYYY" na obiekt Date
+        function parseDate(str) {
+            if (!str) return new Date(0); // Zabezpieczenie
+            const parts = str.split('.');
+            // new Date(year, monthIndex, day) -> monthIndex zaczyna się od 0 (styczeń)
+            return new Date(parts[2], parts[1] - 1, parts[0]);
+        }
+
         // 3. Funkcja renderująca historię
         function renderHistory() {
-            // Sprawdzamy czy użytkownik ma jakieś zamówienia
-            // (user.orders może być undefined, jeśli to nowe konto)
             if (user.orders && user.orders.length > 0) {
+                listContainer.innerHTML = '';
 
-                listContainer.innerHTML = ''; // Czyścimy "Ładowanie..."
-
-                // Odwracamy tablicę (.reverse()), żeby najnowsze były na górze
-                // Kopiujemy tablicę [...orders] żeby nie psuć oryginału
                 const sortedOrders = [...user.orders].reverse();
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); // Zerujemy godzinę, liczy się tylko dzień
 
                 sortedOrders.forEach(order => {
                     const card = document.createElement('div');
                     card.className = 'history-card';
 
+                    // Sprawdzamy datę wydarzenia
+                    const eventDate = parseDate(order.date);
+                    const isFuture = eventDate >= today;
+
+                    // Budujemy przyciski (tylko dla przyszłych wydarzeń)
+                    let actionsHtml = '';
+                    if (isFuture) {
+                        actionsHtml = `
+                            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; text-align: right;">
+                                <button onclick="resendTicket('${order.id}')" class="btn btn-secondary" style="font-size: 0.9em; margin-right: 10px;">
+                                    &#9993; Wyślij ponownie
+                                </button>
+                                <button onclick="printTicket('${order.id}')" class="btn btn-primary" style="font-size: 0.9em;">
+                                    &#128424; Drukuj bilet
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        actionsHtml = `
+                            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; text-align: right; color: #999; font-style: italic;">
+                                Wydarzenie archiwalne
+                            </div>
+                        `;
+                    }
+
                     card.innerHTML = `
                         <div class="history-header">
-                            <span class="history-date">Zakupiono: ${order.purchaseDate || order.date}</span>
-                            <span>${order.ticketId || '#ID-???'}</span>
+                            <span class="history-date">Zakupiono: ${order.purchaseDate || 'Brak daty'}</span>
+                            <span>ID: ${order.ticketId || '#' + order.id}</span>
                         </div>
                         <div class="history-body">
                             <h3 class="history-title">${order.title}</h3>
                             
                             <div class="history-details">
                                 <div><strong>Data wydarzenia:</strong><br> ${order.date}</div>
-                                <div><strong>Miejsce:</strong><br> ${order.place}</div>
+                                <div><strong>Miejsce:</strong><br> ${order.place || order.city || 'Nieznane'}</div>
                                 <div><strong>Sektor:</strong><br> ${order.sector || '-'}</div>
                                 <div><strong>Miejsce:</strong><br> ${order.seat || '-'}</div>
                             </div>
 
                             <div class="history-price">
-                                Cena: ${order.price ? order.price + ' PLN' : '0 PLN'}
+                                Cena: ${order.price ? order.price + ' PLN' : '-'}
                             </div>
+
+                            ${actionsHtml}
                         </div>
                     `;
                     listContainer.appendChild(card);
                 });
 
             } else {
-                // Jeśli brak zamówień - wyświetlamy "Stan pusty"
                 listContainer.innerHTML = `
                     <div class="empty-state">
                         <span class="empty-icon">&#127903;</span>
@@ -96,7 +127,96 @@
             }
         }
 
-        // Uruchomienie
+        // --- OBSŁUGA PRZYCISKÓW ---
+
+        // 1. Ponowne wysłanie
+        window.resendTicket = function (orderId) {
+            // Symulacja wysyłki
+            alert(`Bilet (Zamówienie #${orderId}) został ponownie wysłany na adres e-mail: ${user.email}`);
+        };
+
+        // 2. Drukowanie
+        window.printTicket = function (orderId) {
+            // Znajdź dane zamówienia
+            const order = user.orders.find(o => o.id == orderId);
+            if (!order) return;
+
+            // Otwórz nowe okno do druku
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
+
+            // Wygeneruj HTML biletu do druku
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Bilet - TicketHero</title>
+                    <link rel="stylesheet" href="style.css"> 
+                    <style>
+                        body { background: white; padding: 40px; font-family: Arial, sans-serif; }
+                        .ticket-print { 
+                            border: 3px dashed #333; 
+                            padding: 30px; 
+                            max-width: 600px; 
+                            margin: 0 auto; 
+                            text-align: center;
+                        }
+                        h1 { color: #1e90ff; margin-bottom: 5px; }
+                        .meta { color: #666; margin-bottom: 30px; font-size: 0.9em; }
+                        .details { text-align: left; margin: 20px 0; font-size: 1.2em; line-height: 1.6; }
+                        .barcode { 
+                            background: #000; 
+                            height: 50px; 
+                            width: 80%; 
+                            margin: 30px auto; 
+                            color: white; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center; 
+                            letter-spacing: 5px;
+                            font-family: monospace;
+                        }
+                        .footer { font-size: 0.8em; color: #999; margin-top: 40px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="ticket-print">
+                        <h1>Ticket Hero</h1>
+                        <div class="meta">Bilet elektroniczny | Zamówienie #${order.ticketId || order.id}</div>
+                        
+                        <h2>${order.title}</h2>
+                        
+                        <div class="details">
+                            <strong>Data:</strong> ${order.date}<br>
+                            <strong>Miejsce:</strong> ${order.place || order.city}<br>
+                            <hr>
+                            <strong>Sektor:</strong> ${order.sector || 'Brak'}<br>
+                            <strong>Miejsce:</strong> ${order.seat || 'Brak'}<br>
+                            <strong>Cena:</strong> ${order.price} PLN
+                        </div>
+
+                        <div class="details">
+                            <strong>Posiadacz biletu:</strong><br>
+                            ${user.firstName} ${user.lastName}
+                        </div>
+
+                        <div class="barcode">
+                            ||| || ||| | |||| ||| || ||||
+                        </div>
+
+                        <div class="footer">
+                            Prosimy o wydrukowanie biletu lub okazanie go na urządzeniu mobilnym.<br>
+                            Wygenerowano: ${new Date().toLocaleString()}
+                        </div>
+                    </div>
+                    <script>
+                        // Automatycznie otwórz okno drukowania
+                        window.onload = function() { window.print(); }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        };
+
         renderHistory();
     </script>
 </body>

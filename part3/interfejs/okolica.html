@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koncerty w Twojej okolicy – TicketHero</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="main-page" style="grid-template-columns: 1fr; grid-template-areas: 'header' 'nav' 'main';">
+
+    <header>
+        <h1>Koncerty w Twojej okolicy</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a id="accountLink" href="Konto.html" style="display:none;">Konto</a></li>
+            <li><a href="index.html">Szukaj koncertów</a></li>
+            <li><a class="active" href="#">Koncerty w twojej okolicy</a></li>
+            <li><a id="authBtn" href="login.html">Zaloguj się</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="info" style="text-align: center; margin-bottom: 30px; background: #fff; border: 1px solid #e0e6ef;">
+            <h2 style="margin-top: 0;">Gdzie szukasz wydarzeń?</h2>
+
+            <form id="locationForm"
+                style="display: flex; gap: 10px; justify-content: center; max-width: 500px; margin: 0 auto;">
+                <input type="text" id="cityInput" placeholder="Wpisz miasto (np. Warszawa)" required
+                    style="flex-grow: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
+                <button type="submit" class="btn btn-primary">Szukaj</button>
+            </form>
+
+            <p id="userLocationHint" style="font-size: 0.9em; color: #666; margin-top: 10px; display: none;">
+                Użyto lokalizacji z Twojego profilu: <strong id="detectedCity">---</strong>
+            </p>
+        </div>
+
+        <h3 id="resultsTitle" style="display: none;">Wydarzenia w pobliżu:</h3>
+        <div id="resultsContainer" class="concert-details" style="display: flex; flex-direction: column; gap: 20px;">
+        </div>
+
+    </main>
+
+    <script src="auth.js"></script>
+    <script>
+        // --- BAZA KONCERTÓW (Taka sama jak w index.html) ---
+        const concertsDB = [
+            {
+                id: 1,
+                title: "Freddie Mercury Rock-Operowo",
+                date: "21.11.2026",
+                city: "Łódź",
+                img: "https://www.ebilet.pl/media/cms/media/xrhpj4s5/freddie-mercury-opera-show-552x736-px-e2f617db-f1c6-4e8d-a457-635fc1b031af.webp",
+                desc: "Niezwykłe spojrzenie na utwory Queen."
+            },
+            {
+                id: 2,
+                title: "Michał Wiśniewski Akustycznie",
+                date: "11.02.2026",
+                city: "Kraków",
+                img: "https://www.ebilet.pl/media/cms/media/msundxlx/552x736-572dbcc9-1658-6521-e1a4-683e025dca76-86ed122f-6ff1-4558-bf24-dde28dfe1922.webp",
+                desc: "Akustyczne aranżacje największych przebojów."
+            },
+            {
+                id: 3,
+                title: "Piotr Rubik",
+                date: "03.03.2026",
+                city: "Poznań",
+                img: "https://www.ebilet.pl/media/cms/media/2gqbfdqf/rubik_swiat_656x369-1-6b92428f-6a83-446c-949f-4b3c0f134fd5.webp",
+                desc: "Pełne energii i emocji kompozycje Piotra Rubika."
+            },
+            {
+                id: 4,
+                title: "Maryla Rodowicz",
+                date: "21.07.2026",
+                city: "Warszawa",
+                img: "https://biletyna.pl/file/get/id/173202",
+                desc: "Królowa polskiej estrady w Warszawie."
+            },
+            {
+                id: 5,
+                title: "Michał Bajor - Kolor Cafe",
+                date: "15.05.2026",
+                city: "Gdańsk",
+                img: "https://placehold.co/150x200?text=Bajor",
+                desc: "Piosenki włoskie i francuskie."
+            }
+        ];
+
+        // Elementy DOM
+        const cityInput = document.getElementById('cityInput');
+        const userHint = document.getElementById('userLocationHint');
+        const detectedCitySpan = document.getElementById('detectedCity');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const resultsTitle = document.getElementById('resultsTitle');
+        const form = document.getElementById('locationForm');
+
+        // 1. Sprawdź czy użytkownik jest zalogowany i ma ustawione miasto
+        const user = getCurrentUser();
+
+        if (user && user.settings && user.settings.city) {
+            // Jeśli użytkownik ma zapisane miasto -> wypełnij i szukaj automatycznie
+            const savedCity = user.settings.city;
+            cityInput.value = savedCity;
+
+            userHint.style.display = 'block';
+            detectedCitySpan.textContent = savedCity;
+
+            // Automatyczne wyszukiwanie
+            findConcerts(savedCity);
+        }
+
+        // 2. Obsługa formularza (Ręczne wpisywanie)
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const city = cityInput.value.trim();
+            if (city) {
+                findConcerts(city);
+                // Ukrywamy podpowiedź o profilu, bo użytkownik wpisał coś ręcznie
+                userHint.style.display = 'none';
+            }
+        });
+
+        // 3. Logika wyszukiwania
+        function findConcerts(searchCity) {
+            resultsContainer.innerHTML = '';
+            resultsTitle.style.display = 'block';
+
+            // Normalizacja (małe litery)
+            const normalizedSearch = searchCity.toLowerCase();
+
+            // Filtracja
+            const matches = concertsDB.filter(c => {
+                const concertCity = c.city.toLowerCase();
+
+                // Dokładne dopasowanie
+                if (concertCity === normalizedSearch) return true;
+
+                // Dopasowanie "zawiera" (np. wpiszesz "Warsz" znajdzie "Warszawa")
+                if (concertCity.includes(normalizedSearch)) return true;
+
+                // --- SYMULACJA OKOLICY (Radius) ---
+                // Tutaj ręcznie definiujemy co jest "blisko" dla prototypu
+                if (normalizedSearch === 'trójmiasto' && ['gdańsk', 'gdynia', 'sopot'].includes(concertCity)) return true;
+                if (normalizedSearch === 'śląsk' && ['katowice', 'chorzów', 'gliwice'].includes(concertCity)) return true;
+
+                return false;
+            });
+
+            // Renderowanie wyników
+            if (matches.length > 0) {
+                matches.forEach(c => {
+                    const card = document.createElement('section');
+                    // Styl "karty poziomej" z index.html
+                    card.style.display = 'flex';
+                    card.style.gap = '20px';
+                    card.style.alignItems = 'start';
+                    card.style.padding = '15px';
+                    card.style.background = '#fafcfe';
+                    card.style.border = '1px solid #eef4fb';
+                    card.style.borderRadius = '6px';
+
+                    const isMobile = window.innerWidth < 600;
+                    const imgSrc = c.img.includes('http') ? c.img : 'https://placehold.co/150x200?text=Brak+foto';
+
+                    card.innerHTML = `
+                        <img src="${imgSrc}" alt="${c.title}" style="width: ${isMobile ? '100px' : '150px'}; border-radius: 6px;">
+                        <div>
+                            <h2 style="margin-top:0; font-size: 1.3em;">${c.title}</h2>
+                            <p style="margin: 5px 0; color:#555;">
+                                <span class="tag tag-wip" style="margin-left:0; background:#e6ffe6; border-color:#28a745; color:#155724;">${c.city}</span> 
+                                | ${c.date}
+                            </p>
+                            <p style="font-size: 0.9em;">${c.desc}</p>
+                            <a href="koncert.html?id=${c.id}" class="btn btn-primary" style="padding: 8px 15px; font-size: 0.9em; margin-top: 10px;">Zobacz szczegóły</a>
+                        </div>
+                    `;
+                    resultsContainer.appendChild(card);
+                });
+            } else {
+                resultsContainer.innerHTML = `
+                    <div class="info info-warning" style="text-align:center; padding: 30px;">
+                        <h3>Nie znaleziono koncertów w: ${searchCity}</h3>
+                        <p>Spróbuj wpisać większe miasto w pobliżu (np. Warszawa, Kraków, Poznań).</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+
+</html>
