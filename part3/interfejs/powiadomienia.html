@@ -8,6 +8,36 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
+<style>
+    .location-wrapper {
+    position: relative; 
+}
+
+.suggestions-list {
+    position: absolute; 
+    top: 100%; 
+    left: 0;
+    width: 100%; 
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    z-index: 10;  
+    max-height: 200px;  
+    overflow-y: auto;  
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    display: none;  
+}
+
+.suggestions-list .suggestion-item {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.suggestions-list .suggestion-item:hover {
+    background-color: #f0f0f0;
+}
+</style>
+
 <body class="account-page">
     <header>
         <h1>Ustawienia powiadomień</h1>
@@ -69,7 +99,7 @@
                         </div>
 
 
-                        <div class="slider-container" style="margin-top: 20px;">
+                        <div class="slider-container" style="margin-top: 20px; margin-bottom: 80px;">
                             <label>
                                 Maksymalna odległość: <span id="value"
                                     style="font-weight: bold; color: #1e90ff;">50</span> km
@@ -280,6 +310,7 @@
             slider.value = l.dataset.value;
             output.textContent = slider.value;
         }));
+        
 
         function loadSettings() {
             if (user && user.settings) {
