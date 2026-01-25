@@ -100,7 +100,7 @@
 
 
                         <div class="slider-container" style="margin-top: 20px; margin-bottom: 80px;">
-                            <label>
+                            <label style="background-color: #ffffff; display: block; width: 100%;">
                                 Maksymalna odległość: <span id="value"
                                     style="font-weight: bold; color: #1e90ff;">50</span> km
                             </label>
@@ -310,7 +310,6 @@
             slider.value = l.dataset.value;
             output.textContent = slider.value;
         }));
-        
 
         function loadSettings() {
             if (user && user.settings) {
